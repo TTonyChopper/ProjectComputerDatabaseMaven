@@ -12,6 +12,7 @@ import com.excilys.formation.webproject.om.Computer;
  */
 public class PageWrapper implements Serializable {
 
+/*****************************Builder*****************************/
 	/**
 	 * 
 	 * @author excilys
@@ -87,6 +88,7 @@ public class PageWrapper implements Serializable {
 		    return new PageWrapper(this);
 		}
 	}
+/*****************************Builder*****************************/
 	
 	/**
 	 * 

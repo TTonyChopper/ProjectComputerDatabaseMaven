@@ -150,11 +150,11 @@ public class Validator {
 	private static String preciseCheck(String discontinued,String introduced) {		
 		String status = "OK";
 		
-	//date 1
+		//date 1
 	    int year = Integer.parseInt(discontinued.substring(0,4));
 		int month = Integer.parseInt(discontinued.substring(5,7));
 		int day = Integer.parseInt(discontinued.substring(8,10));
-	//date 2
+		//date 2
 		int year2 = Integer.parseInt(introduced.substring(0,4));
 		int month2 = Integer.parseInt(introduced.substring(5,7));
 		int day2 = Integer.parseInt(introduced.substring(8,10));	

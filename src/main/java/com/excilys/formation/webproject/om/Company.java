@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public class Company implements Serializable{
 	
+/*****************************Builder*****************************/
 	public static class CpyBuilder {
 		private Long id;
 		private String	name;
@@ -39,6 +40,7 @@ public class Company implements Serializable{
 	        return new Company(this);
 	    }
 	}
+/*****************************Builder*****************************/
 	
 	/**
 	 * 
