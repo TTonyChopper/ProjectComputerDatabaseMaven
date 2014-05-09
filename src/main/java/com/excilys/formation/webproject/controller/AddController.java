@@ -1,70 +1,75 @@
-//PACKAGE COM.EXCILYS.FORMATION.WEBPROJECT.CONTROLLER;
-//
-//IMPORT JAVA.IO.IOEXCEPTION;
-//IMPORT JAVA.UTIL.ARRAYLIST;
-//IMPORT JAVA.UTIL.LIST;
-//
-//IMPORT JAVAX.SERVLET.SERVLETCONFIG;
-//IMPORT JAVAX.SERVLET.SERVLETEXCEPTION;
-//IMPORT JAVAX.SERVLET.HTTP.HTTPSERVLETREQUEST;
-//IMPORT JAVAX.SERVLET.HTTP.HTTPSERVLETRESPONSE;
-//
-//IMPORT ORG.SPRINGFRAMEWORK.BEANS.FACTORY.ANNOTATION.AUTOWIRED;
-//IMPORT ORG.SPRINGFRAMEWORK.UI.MODEL;
-//IMPORT ORG.SPRINGFRAMEWORK.WEB.BIND.ANNOTATION.REQUESTMAPPING;
-//IMPORT ORG.SPRINGFRAMEWORK.WEB.BIND.ANNOTATION.REQUESTMETHOD;
-//IMPORT ORG.SPRINGFRAMEWORK.STEREOTYPE.CONTROLLER;
-//IMPORT ORG.SPRINGFRAMEWORK.WEB.CONTEXT.SUPPORT.SPRINGBEANAUTOWIRINGSUPPORT;
-//
-//IMPORT COM.EXCILYS.FORMATION.WEBPROJECT.COMMON.VALIDATOR;
-//IMPORT COM.EXCILYS.FORMATION.WEBPROJECT.DTO.COMPUTERDTO;
-//IMPORT COM.EXCILYS.FORMATION.WEBPROJECT.OM.COMPANY;
-//IMPORT COM.EXCILYS.FORMATION.WEBPROJECT.OM.COMPUTER;
-//IMPORT COM.EXCILYS.FORMATION.WEBPROJECT.SERVICE.IMPL.MAINSERVICEIMPL;
-//
-///**
-// * 
-// * @AUTHOR EXCILYS
-// *
-// */
-//@REQUESTMAPPING("/ADDCOMPUTER")
-//@CONTROLLER
-//PUBLIC CLASS ADDCONTROLLER EXTENDS FORMCONTROLLER{
-//	
-//	@AUTOWIRED
-//	PRIVATE MAINSERVICEIMPL MAINSERVICE;
-//	
-//	@REQUESTMAPPING(METHOD = REQUESTMETHOD.GET)
-//	PUBLIC STRING GETADDFORM(MODEL MODEL) {		
-//		
-//		LIST<COMPANY> COMPANYLIST = (ARRAYLIST<COMPANY>)MAINSERVICE.GETLISTCOMPANY();
-//		MODEL.ADDATTRIBUTE("COMPANYLIST", COMPANYLIST);
-//		MODEL.ADDATTRIBUTE("COMPANYLISTSIZE", COMPANYLIST.SIZE());
-//		
-//		RETURN "ADDCOMPUTER";
-//	}
-//	
-//	@REQUESTMAPPING(METHOD = REQUESTMETHOD.POST)
-//	PUBLIC VOID POSTADDFORM(HTTPSERVLETREQUEST REQUEST,HTTPSERVLETRESPONSE RESPONSE) THROWS SERVLETEXCEPTION, IOEXCEPTION {		
-//			
-//		COMPUTERDTO COMPUTERDTO = RETRIEVECOMPUTERDTO(REQUEST,RESPONSE);
-//		COMPUTER COMPUTER = RETRIEVECOMPUTER(COMPUTERDTO);
-//		
-//		LIST ERRORLIST = VALIDATOR.CHECK(COMPUTERDTO);
-//		
-//		IF (!(VALIDATOR.VALIDATE(ERRORLIST))) {
-//			
-//			LIST<COMPANY> COMPANYLIST = (ARRAYLIST<COMPANY>)MAINSERVICE.GETLISTCOMPANY();
-//			REQUEST.SETATTRIBUTE("COMPANYLIST", COMPANYLIST);
-//			REQUEST.SETATTRIBUTE("COMPANYLISTSIZE", COMPANYLIST.SIZE());
-//			REQUEST.SETATTRIBUTE("ERRORLIST", ERRORLIST);
-//			
-//			THIS.GETSERVLETCONTEXT().GETREQUESTDISPATCHER("/WEB-INF/ADDCOMPUTER.JSP").FORWARD(REQUEST,RESPONSE);
-//		}
-//		ELSE { 
-//			MAINSERVICE.INSERTCOMPUTER(COMPUTER);
-//			
-//			THIS.GETSERVLETCONTEXT().GETREQUESTDISPATCHER("/INDEX.JSP").FORWARD(REQUEST,RESPONSE);
-//		}
-//	}	
-//}
+package com.excilys.formation.webproject.servlet;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.excilys.formation.webproject.common.Validator;
+import com.excilys.formation.webproject.dto.ComputerDTO;
+import com.excilys.formation.webproject.om.Company;
+import com.excilys.formation.webproject.om.Computer;
+import com.excilys.formation.webproject.service.impl.MainServiceImpl;
+
+/**
+ * 
+ * @author excilys
+ *
+ */
+@Controller
+public class AddController extends FormController {
+	
+	@RequestMapping(value="/dashboard",method = RequestMethod.GET)
+	 public String getAdd(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
+			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="cpu.id") String fieldOrder, 
+			 			  @RequestParam(value="order", required=false, defaultValue="ASC") String order, 
+			 			  @RequestParam(value="pageNumber", required=false, defaultValue="1") String pageNumberS,
+			              Model model) {		
+		
+		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
+		model.addAttribute("companylist", companylist);
+		model.addAttribute("companylistsize", companylist.size());
+		
+		return "addComputer";
+	}
+	
+	@RequestMapping(value="/dashboard",method = RequestMethod.GET)
+	 public String postAdd(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
+			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="cpu.id") String fieldOrder, 
+			 			  @RequestParam(value="order", required=false, defaultValue="ASC") String order, 
+			 			  @RequestParam(value="pageNumber", required=false, defaultValue="1") String pageNumberS,
+			 			 @RequestParam(value="companyid", required=true) Long companyid,
+			              Model model) {		
+			
+		Company company = mainService.findCompanyById(companyid);
+		Computer computer = retrieveComputer(computerDTO);
+		
+		List errorlist = Validator.check(computerDTO);
+		
+		if (!(Validator.validate(errorlist))) {
+			
+			List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
+			model.addAttribute("companylist", companylist);
+			model.addAttribute("companylistsize", companylist.size());
+			model.addAttribute("errorlist", errorlist);
+			
+			return "index";
+		}
+		else { 
+			mainService.insertComputer(computer);
+			
+			return "index";
+		}
+	}	
+}

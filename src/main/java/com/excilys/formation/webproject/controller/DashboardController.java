@@ -28,20 +28,14 @@ public class DashboardController {
 	private MainServiceImpl mainService;
 	
 	@RequestMapping(value="/dashboard",method = RequestMethod.GET)
-	 public String hello(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
-			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="") String fieldOrder, 
-			 			  @RequestParam(value="order", required=false, defaultValue="") String order, 
+	 public String getDashboard(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
+			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="cpu.id") String fieldOrder, 
+			 			  @RequestParam(value="order", required=false, defaultValue="ASC") String order, 
 			 			  @RequestParam(value="pageNumber", required=false, defaultValue="1") String pageNumberS,
 			              Model model) {		
 
 		System.out.println("I ABOUT TO DO it yay !");
 		PageWrapper pageWrapper = null;
-		
-		//1-fieldOrder
-		if (fieldOrder.isEmpty()) fieldOrder = "cpu.id";
-		
-		//2-order
-		if (order.isEmpty()) order = "ASC";
 			
 		//Search OFF
 		if ( (nameFilter == null) || (nameFilter.isEmpty()) ) {
@@ -54,8 +48,7 @@ public class DashboardController {
 			//4-pageNumber
 			
 			Integer pageNumber = null;
-			if (pageNumberS == null) pageNumber = 1;
-			else if (pageNumberS.equals("last")) {
+			if (pageNumberS.equals("last")) {
 				pageNumber = (int) Math.ceil(computerListSize / 25.0);	
 				if (pageNumber == 0) pageNumber = 1;
 			}else if (!pageNumberS.matches("^[0-9]*$")) {
