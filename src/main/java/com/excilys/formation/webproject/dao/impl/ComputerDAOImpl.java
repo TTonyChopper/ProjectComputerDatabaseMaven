@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.excilys.formation.webproject.dao.ComputerDAO;
 import com.excilys.formation.webproject.db.impl.ConnectionFactoryImpl;
 import com.excilys.formation.webproject.om.Company;
@@ -26,9 +29,11 @@ import com.excilys.formation.webproject.common.PageWrapper;
  * @author excilys
  *
  */
-public enum ComputerDAOImpl implements ComputerDAO{
-
-	Singleton;	 
+@Repository
+public class ComputerDAOImpl implements ComputerDAO{
+	
+	@Autowired
+	private ConnectionFactoryImpl cnFactory;
 	
 	/**
 	 * 
@@ -65,7 +70,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		Computer computer = null;
 
 		try {
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
 					  				  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.id = ?;");
 			stmt.setString(1,String.valueOf(id));	
@@ -80,7 +85,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return computer;
 	}
@@ -96,7 +101,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 
 		try {
 
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) as computerlistsize FROM computer");
 			
@@ -106,7 +111,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return computerListSize;
 	}
@@ -122,7 +127,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 
 		try {
 
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
 								  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id;");
@@ -132,7 +137,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return liste;
 	}
@@ -148,7 +153,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 
 		try {
 
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
 								  	  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?;");
 			
@@ -163,7 +168,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 	}
 	/**
@@ -178,7 +183,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		PreparedStatement stmt = null;
 
 		try {
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT COUNT(*) AS computerListSize, cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu " 
 									  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ? ");
 			stmt.setString(1,"%"+pageWrapper.getNameFilter()+"%");
@@ -192,7 +197,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return computerListSize;	
 	}
@@ -207,7 +212,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		PreparedStatement stmt = null;
 
 		try {
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu " 
 									  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ? "
 									  +"ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?;");
@@ -224,7 +229,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return liste;	
 	}
@@ -238,7 +243,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 
 		PreparedStatement stmt = null;
 
-		cn = ConnectionFactoryImpl.Singleton.getConnection();
+		cn = cnFactory.getConnection();
 		String companyname = comp.getCompany().getName();
 		if (comp.getCompany().getName()==null) stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued) VALUES (?,?,?);");
 		else stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?);"); 
@@ -252,7 +257,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 			
 		stmt.executeUpdate();
 
-		ConnectionFactoryImpl.Singleton.closeStatement(stmt);	
+		cnFactory.closeStatement(stmt);	
 	}
 	/**
 	 * 
@@ -278,7 +283,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		}else stmt.setString(4,String.valueOf(id));
 						
 		stmt.executeUpdate();
-		ConnectionFactoryImpl.Singleton.closeStatement(stmt);
+		cnFactory.closeStatement(stmt);
 	}
 	/**
 	 * 
@@ -290,13 +295,13 @@ public enum ComputerDAOImpl implements ComputerDAO{
 
 		PreparedStatement stmt = null;
 
-		cn = ConnectionFactoryImpl.Singleton.getConnection();
+		cn = cnFactory.getConnection();
 		stmt = cn.prepareStatement("DELETE FROM computer WHERE id = ?;");
 
 		stmt.setString(1,String.valueOf(id));
 			
 		stmt.executeUpdate();
 
-		ConnectionFactoryImpl.Singleton.closeStatement(stmt);
+		cnFactory.closeStatement(stmt);
 	}
 }

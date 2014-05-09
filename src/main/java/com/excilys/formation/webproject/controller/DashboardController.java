@@ -1,13 +1,16 @@
-package com.excilys.formation.webproject.servlet;
+package com.excilys.formation.webproject.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.excilys.formation.webproject.common.PageWrapper;
 import com.excilys.formation.webproject.om.Computer;
@@ -18,21 +21,27 @@ import com.excilys.formation.webproject.service.impl.MainServiceImpl;
  * @author excilys
  *
  */
-@WebServlet("/dashboard")
-public class DashboardServlet extends HttpServlet {
+@Controller
+public class DashboardController {
 
-	public void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {		
-		//
+	@Autowired
+	private MainServiceImpl mainService;
+	
+	@RequestMapping(value="/dashboard",method = RequestMethod.GET)
+	 public String hello(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
+			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="") String fieldOrder, 
+			 			  @RequestParam(value="order", required=false, defaultValue="") String order, 
+			 			  @RequestParam(value="pageNumber", required=false, defaultValue="1") String pageNumberS,
+			              Model model) {		
+
+		System.out.println("I ABOUT TO DO it yay !");
 		PageWrapper pageWrapper = null;
-		String nameFilter = request.getParameter("nameFilter");
 		
 		//1-fieldOrder
-		String fieldOrder = request.getParameter("fieldOrder");
-		if (fieldOrder == null) fieldOrder = "cpu.id";
+		if (fieldOrder.isEmpty()) fieldOrder = "cpu.id";
 		
 		//2-order
-		String order = request.getParameter("order");
-		if (order == null) order = "ASC";
+		if (order.isEmpty()) order = "ASC";
 			
 		//Search OFF
 		if ( (nameFilter == null) || (nameFilter.isEmpty()) ) {
@@ -40,10 +49,9 @@ public class DashboardServlet extends HttpServlet {
 			if (nameFilter == null) nameFilter = "";
 			
 			//3-computerListSize
-			Integer computerListSize = MainServiceImpl.Singleton.getListComputerSize();
+			Integer computerListSize = mainService.getListComputerSize();
 			
 			//4-pageNumber
-			String pageNumberS = request.getParameter("pageNumber");
 			
 			Integer pageNumber = null;
 			if (pageNumberS == null) pageNumber = 1;
@@ -56,21 +64,21 @@ public class DashboardServlet extends HttpServlet {
 			
 			//Build with all except computerList,namefilter
 			pageWrapper = PageWrapper.builder().pageNumber(pageNumber).fieldOrder(fieldOrder).order(order).computerListSize(computerListSize).build();
+			System.out.println("test loop1"+pageWrapper.toString());
 		
 			//5-Set the computerList
-			MainServiceImpl.Singleton.getListComputer(pageWrapper);
+			mainService.getListComputer(pageWrapper);
 
 		//Search ON
 		}else {		
 			
 			//Build partial pageWrapper, countains nameFilter
 			pageWrapper = PageWrapper.builder().nameFilter(nameFilter).build();
-			
+			System.out.println("test loop2"+pageWrapper.toString());
 			//3-computerListSize
-			Integer computerListSize = MainServiceImpl.Singleton.getListComputerSizeWithName(pageWrapper);
+			Integer computerListSize = mainService.getListComputerSizeWithName(pageWrapper);
 		
 			//4-pageNumber
-			String pageNumberS = request.getParameter("pageNumber");
 			Integer pageNumber = null;
 			if (pageNumberS == null) pageNumber = 1;
 			else if ((pageNumberS.equals("last"))) {
@@ -84,15 +92,17 @@ public class DashboardServlet extends HttpServlet {
 			pageWrapper = PageWrapper.builder().nameFilter(nameFilter).pageNumber(pageNumber).fieldOrder(fieldOrder).order(order).computerListSize(computerListSize).build();
 			
 			//5-Set the computerList			
-			List<Computer> computerList = MainServiceImpl.Singleton.getListComputerWithName(pageWrapper); 
+			List<Computer> computerList = mainService.getListComputerWithName(pageWrapper); 
 			
 			//Build complete PageWrapper
 			pageWrapper = PageWrapper.builder().nameFilter(nameFilter).pageNumber(pageNumber).fieldOrder(fieldOrder).order(order).computerList(computerList).computerListSize(computerListSize).build();		
 		}
+		System.out.println("I DIT it yay !");
 		
 		//Set the PageWrapper
-		request.setAttribute("pageWrapper", pageWrapper);
+		model.addAttribute("pageWrapper", pageWrapper);
 		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request,response);
+		return "dashboard";
 }
+
 }

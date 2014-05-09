@@ -1,4 +1,4 @@
-package com.excilys.formation.webproject.log;
+/*package com.excilys.formation.webproject.log;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,4 +8,4 @@ public class Test {
     Logger logger = LoggerFactory.getLogger(Test.class);
     logger.info("Hello World");
   }
-}	
+}*/	

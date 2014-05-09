@@ -2,11 +2,16 @@ package com.excilys.formation.webproject.om;
 
 import java.io.Serializable;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 /**
  * 
  * @author excilys
  *
  */
+@Component
+@Scope("Prototype")
 public class Company implements Serializable{
 	
 /*****************************Builder*****************************/

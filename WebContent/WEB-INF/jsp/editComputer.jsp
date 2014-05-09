@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<jsp:include page="../include/header.jsp" />
+<jsp:include page="../../include/header.jsp" />
 
 <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.js"></script>
@@ -25,7 +25,7 @@
 			);								
 			
 			jQuery.validator.addMethod("dateComparison", function (value,element) {
-				if ( ($.trim(value).length > 0) && ($.trim($('#introducedDate').val()).length > 0) ) { return Date.parse($('#introducedDate').val()) < Date.parse(value); }
+				if ( ($.trim(value).length > 0) && ($.trim($('#introducedDate').val()).length > 0) ) { return Date.parse($('#introducedDate').val()) <= Date.parse(value); }
 				else {return true;}
 				},"Dates Impossibles"
 			);
@@ -53,58 +53,59 @@
 	    });
  });
  </script>
-<!--              /JQuery               -->
+ <!--              /JQuery               -->
 
 <section id="main">
 
-	<h1>Add Computer</h1>
+	<h1>Edit Computer</h1>
 	
-	<form action="addComputer" method="POST">
+	<form id="form" action="editComputer" method="POST">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" />
+					<input type="text" name="name" value="${ecomputer.name}"/>
 					<span class="help-inline">Required</span>
-					<input size="${errorlist.get(0).length()}" readonly type="text" value="${ errorlist.get(0) }"/>			
+					<input readonly size="${errorlist.get(0).length()}" type="text" value="${errorlist.get(0)}"/>
 				</div>
 			</div>
 	
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input type="date" name="introducedDate" pattern="YY-MM-dd"/>
+					<input id="introducedDate" type="text" name="introducedDate" value="${ecomputer.introduced}" />
 					<span class="help-inline">YYYY-MM-DD</span>
-					<input size="${errorlist.get(1).length()}" readonly type="text" value="${ errorlist.get(1) }"/>				
+					<input readonly size="${errorlist.get(1).length()}" type="text" value="${errorlist.get(1)}"/>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input type="date" name="discontinuedDate" pattern="YY-MM-dd"/>
+					<input type="text" name="discontinuedDate" value="${ecomputer.discontinued}"/>
 					<span class="help-inline">YYYY-MM-DD</span>
-					<input size="${errorlist.get(2).length()}" readonly type="text" value="${ errorlist.get(2) }"/>			
+					<input readonly size="${errorlist.get(2).length()}" type="text" value="${errorlist.get(2)}"/>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="company">Company Name:</label>
 				<div class="input">
 					<select name="company">
-							<option selected value="0">--</option>
+							<option selected value="${ecomputer.company.id}">${ecomputer.company.name}</option>
 						<c:forEach items="${companylist}" var="company">
 							<option value="${company.id}">${company.name}</option>
 						</c:forEach>
 					</select>
-					<input size="${errorlist.get(3).length()}" readonly type="text" value="${ errorlist.get(3) }"/> 
+					<input readonly size="${errorlist.get(3).length()}" type="text" value="${errorlist.get(3)}"/>
 				</div>
 			</div>
 		</fieldset>
 		
 		<div class="actions">
-			<input type="submit" value="add" class="btn btn-success">
+			<input type="hidden" name="eid" value="${ecomputer.id}">
+			<input type="submit" value="edit" class="btn btn-success">			
 			or <a href="dashboard" class="btn btn-danger">Cancel</a>
 		</div>
 	</form>
 </section>
 
-<jsp:include page="../include/footer.jsp" />
+<jsp:include page="../../include/footer.jsp" />

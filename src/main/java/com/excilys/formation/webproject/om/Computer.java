@@ -3,6 +3,9 @@ package com.excilys.formation.webproject.om;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 /**
  * 	id - The Long id of the computer in the database
  *  name - The String name of the computer
@@ -19,8 +22,11 @@ import java.sql.Timestamp;
  * @author excilys
  *
  */
+@Component
+@Scope("Prototype")
 public class Computer implements Serializable {
 	
+/*****************************Builder*****************************/
 	public static class CpuBuilder {
 		private Long id;
 		private String	name;
@@ -90,6 +96,7 @@ public class Computer implements Serializable {
 	        return new Computer(this);
 	    }
 	}
+/*****************************Builder*****************************/	
 	
 	/**
 	 * 

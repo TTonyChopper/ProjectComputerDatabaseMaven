@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.excilys.formation.webproject.dao.CompanyDAO;
 import com.excilys.formation.webproject.db.impl.ConnectionFactoryImpl;
 import com.excilys.formation.webproject.om.Company;
@@ -17,10 +20,12 @@ import com.excilys.formation.webproject.om.Company;
  * @author excilys
  *
  */
-public enum CompanyDAOImpl implements CompanyDAO{
+@Repository
+public class CompanyDAOImpl implements CompanyDAO{
 
-	Singleton ;
-
+	@Autowired
+	private ConnectionFactoryImpl cnFactory;
+	
 	/**
 	 * 
 	 * @param rs The ResulSet from the query on the database Root
@@ -46,7 +51,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 		Company company = null;
 
 		try {
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE id = ?;");
 			stmt.setString(1,String.valueOf(id));
 			rs = stmt.executeQuery();	
@@ -56,7 +61,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return company;
 	}
@@ -70,7 +75,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 		Company company = null;
 
 		try {
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE name = ?;");
 			stmt.setString(1,name);
 			rs = stmt.executeQuery();	
@@ -80,7 +85,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return company;
 	}
@@ -95,7 +100,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 
 		try {
 
-			cn = ConnectionFactoryImpl.Singleton.getConnection();
+			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM company;");
 			
@@ -104,7 +109,7 @@ public enum CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			 throw new IllegalStateException("Error while querying the database");
 		} finally {
-			ConnectionFactoryImpl.Singleton.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs);
 		}
 		return liste;
 	}
@@ -116,13 +121,13 @@ public enum CompanyDAOImpl implements CompanyDAO{
 
 		PreparedStatement stmt = null;
 		
-		cn = ConnectionFactoryImpl.Singleton.getConnection();
+		cn = cnFactory.getConnection();
 		stmt = cn.prepareStatement("INSERT into company(id,name) VALUES(?,?);");
 
 		stmt.setString(1,String.valueOf(comp.getId()));
 		stmt.setString(2,comp.getName());
 		stmt.executeUpdate();
 			
-		ConnectionFactoryImpl.Singleton.closeStatement(stmt);	
+		cnFactory.closeStatement(stmt);	
 	}
 }

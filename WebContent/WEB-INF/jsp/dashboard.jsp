@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags/"%>
-<jsp:include page="../include/header.jsp" />
+<jsp:include page="../../include/header.jsp" />
 
 <section id="main">
 	<h1 id="homeTitle">${pageWrapper.computerListSize} Computers found.</h1>
@@ -21,4 +21,4 @@
 		
 </section>
 
-<jsp:include page="../include/footer.jsp" />
+<jsp:include page="../../include/footer.jsp" />

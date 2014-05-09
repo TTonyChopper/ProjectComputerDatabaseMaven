@@ -3,6 +3,9 @@ package com.excilys.formation.webproject.common;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formation.webproject.om.Computer;
 
 /**
@@ -10,6 +13,8 @@ import com.excilys.formation.webproject.om.Computer;
  * @author excilys
  *
  */
+@Component
+@Scope("Prototype")
 public class PageWrapper implements Serializable {
 
 /*****************************Builder*****************************/

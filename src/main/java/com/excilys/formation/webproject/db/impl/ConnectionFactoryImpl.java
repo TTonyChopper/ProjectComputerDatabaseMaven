@@ -5,21 +5,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
-public enum ConnectionFactoryImpl {
-	
-	Singleton;
+@Component
+public class ConnectionFactoryImpl {
  
 public final static String JDBC_URL = "jdbc:mysql://localhost:3306/computer-database-db";
 public final static String JDBC_USERNAME = "root";
 public final static String JDBC_PASSWORD = "root";
 
-private final Logger logger = LoggerFactory.getLogger(Logger.class.getName());
 private BoneCP connectionPool = null;
 private static final ThreadLocal<Connection> threadConnection = new ThreadLocal<Connection>();
  
@@ -43,8 +40,8 @@ private void configureConnPool() {
 	} catch (SQLException e) {
 		throw new RuntimeException("Could not configure the connection pool");
 	}
-	logger.debug("contextInitialized.....Connection Pooling is configured");
-	logger.info("Total connections ==> " + connectionPool.getTotalCreatedConnections());
+	System.out.println("contextInitialized.....Connection Pooling is configured");
+	System.out.println("Total connections ==> " + connectionPool.getTotalCreatedConnections());
 	setConnectionPool(connectionPool);
 }
  
