@@ -109,6 +109,8 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void insertComputer(Computer comp) {
 		
+		System.out.println("I m IN !!");
+		System.out.println(comp.toString());
 		Connection cn = cnFactory.getConnection();
 		
 		//Transaction
@@ -119,12 +121,12 @@ public class MainServiceImpl implements MainService{
 		}
 		try {
 			cpuDAO.insert(cn,comp);
+		} catch (SQLException e2) {
 			try {
 				cn.rollback();
-			} catch (SQLException e2) {
+			} catch (SQLException e3) {
 				abortTransaction(cn," on insertion");
 			}
-		} catch (SQLException e3) {
 			throw new IllegalStateException("Error on insertion");
 		} finally {
 			abortTransaction(cn," on insertion");
@@ -149,12 +151,12 @@ public class MainServiceImpl implements MainService{
 		}
 		try {
 			cpuDAO.edit(cn,comp,id);
+		} catch (SQLException e2) {
 			try {
 				cn.rollback();
-			} catch (SQLException e2) {
+			} catch (SQLException e3) {
 				abortTransaction(cn," on edition");
 			}
-		} catch (SQLException e3) {
 			throw new IllegalStateException("Error while setting auto-commit to false on edition");
 		} finally {
 			abortTransaction(cn," on edition");
@@ -178,12 +180,12 @@ public class MainServiceImpl implements MainService{
 		}
 		try {
 			cpuDAO.remove(cn,id);
+		} catch (SQLException e2) {
 			try {
 				cn.rollback();
-			} catch (SQLException e2) {
+			} catch (SQLException e3) {
 				abortTransaction(cn," on removal");
 			}
-		} catch (SQLException e3) {
 			throw new IllegalStateException("Error on removal");
 		} finally {
 			abortTransaction(cn," on removal");
@@ -197,6 +199,7 @@ public class MainServiceImpl implements MainService{
 	public Company findCompanyById(Long id) {
 		Connection cn = cnFactory.getConnection();
 		Company comp  = cpyDAO.findById(cn,id);
+		System.out.println("company found :"+comp);
 		cnFactory.closeConnection(cn);
 		return comp; 
 	}

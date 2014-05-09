@@ -105,8 +105,9 @@ public class ComputerDAOImpl implements ComputerDAO{
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) as computerlistsize FROM computer");
 			
-			rs.next();
+			while(rs.next()){
 			computerListSize = rs.getInt("computerListSize"); 
+			}
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
@@ -255,6 +256,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 		stmt.setString(4,String.valueOf(comp.getCompany().getId()));
 		} else stmt.setString(3,String.valueOf(comp.getDiscontinued()));
 			
+		System.out.println(stmt.toString());
 		stmt.executeUpdate();
 
 		cnFactory.closeStatement(stmt);	

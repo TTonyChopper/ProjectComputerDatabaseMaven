@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<jsp:include page="../include/header.jsp" />
+<jsp:include page="../../include/header.jsp" />
 <section id="main">
 
-	<h1>Edit Computer</h1>
+	<h1>Remove Computer</h1>
 	
 	<form action="removeComputer" method="POST">
 		<fieldset>
@@ -44,4 +44,4 @@
 	</form>
 </section>
 
-<jsp:include page="../include/footer.jsp" />
+<jsp:include page="../../include/footer.jsp" />

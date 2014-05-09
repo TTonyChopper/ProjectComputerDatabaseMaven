@@ -9,24 +9,24 @@
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
 					<th> Computer Name 							
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name&order=ASC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>				 					 	
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name&order=DESC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>			
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>				 					 	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>			
 					</th>			
 					<!-- Table header for Introduced Date -->
 					<th>Introduced Date		
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced&order=ASC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced&order=DESC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
 					</th>	
 					<!-- Table header for Discontinued Date -->
 					<th>Discontinued Date 	
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued&order=ASC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued&order=DESC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
 
 					</th>
 					<!-- Table header for Company Name-->
 					<th> Company 		
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name&order=ASC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
-						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name&order=DESC&pageNumber=1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>		
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
+						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>		
 					</th>				
 					<!-- Table header for Edit buttons-->
 					<th> </th>
@@ -58,7 +58,7 @@
 				</tr>
 			</c:forEach>
 					
-			<a class="btn btn-default" href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=${pageWrapper.fieldOrder}&order=${pageWrapper.order}&pageNumber=1"><span class="glyphicon glyphicon-fast-backward"></span></a>
+			<a class="btn btn-default" href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=${pageWrapper.fieldOrder}&order=${pageWrapper.order}"><span class="glyphicon glyphicon-fast-backward"></span></a>
 		
 			<c:forEach items="${pageWrapper.pageIncrement}" var="INC">
 				
@@ -81,7 +81,7 @@
 			
 		</table>
 		
-			<a class="btn btn-default" href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=${pageWrapper.fieldOrder}&order=${pageWrapper.order}&pageNumber=1"><span class="glyphicon glyphicon-fast-backward"></span></a>
+			<a class="btn btn-default" href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=${pageWrapper.fieldOrder}&order=${pageWrapper.order}"><span class="glyphicon glyphicon-fast-backward"></span></a>
 		
 			<c:forEach items="${pageWrapper.pageIncrement}" var="INC">
 				
