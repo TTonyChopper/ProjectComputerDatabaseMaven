@@ -57,11 +57,7 @@ public interface MainService {
 	/**
 	 * @return the Company in the table company matching the id
 	 */
-	public Company findCompanyById(Long id);
-	/**
-	 * @return the Company in the table company matching the name
-	 */
-	public Company findCompanyByName(String name); 
+	public Company findCompanyById(String id);
 	/**
 	 * 
 	 * @return a List<Company> of every Company in the table company

@@ -109,8 +109,6 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void insertComputer(Computer comp) {
 		
-		System.out.println("I m IN !!");
-		System.out.println(comp.toString());
 		Connection cn = cnFactory.getConnection();
 		
 		//Transaction
@@ -196,24 +194,15 @@ public class MainServiceImpl implements MainService{
 	 * @return the Company in the table company matching the id
 	 */
 	@Override
-	public Company findCompanyById(Long id) {
+	public Company findCompanyById(String id) {
 		Connection cn = cnFactory.getConnection();
-		Company comp  = cpyDAO.findById(cn,id);
-		System.out.println("company found :"+comp);
+		Company comp = new Company();
+		Long idL = Long.decode(id);
+		if (idL > 0) comp = cpyDAO.findById(cn,idL);
+
 		cnFactory.closeConnection(cn);
 		return comp; 
 	}
-	
-	/**
-	 * @return the Company in the table company matching the name
-	 */
-	@Override
-	public Company findCompanyByName(String name) {
-		Connection cn = cnFactory.getConnection();
-		Company comp  = cpyDAO.findByName(cn,name);
-		cnFactory.closeConnection(cn);
-		return comp;
-	}	
 	
 	/**
 	 * 

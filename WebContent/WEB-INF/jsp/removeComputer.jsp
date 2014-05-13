@@ -17,21 +17,21 @@
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input readonly type="date" name="introducedDate" pattern="YY-MM-dd" value="${rcomputer.introduced}" />
+					<input readonly type="date" name="introducedDate" value="${rcomputer.introduced}" />
 					<span class="help-inline">YYYY-MM-DD</span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input readonly type="date" name="discontinuedDate" pattern="YY-MM-dd" value="${rcomputer.discontinued}" />
+					<input readonly type="date" name="discontinuedDate" value="${rcomputer.discontinued}" />
 					<span class="help-inline">YYYY-MM-DD</span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="company">Company Name:</label>
 				<div class="input">
-					<input readonly type="date" name="discontinuedDate" pattern="YY-MM-dd" value="${rcomputer.company.name}" />
+					<input readonly type="date" name="discontinuedDate" value="${rcomputer.company.name}" />
 				</div>
 			</div>
 		</fieldset>

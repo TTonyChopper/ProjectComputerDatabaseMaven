@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="../../include/header.jsp" />
 
 <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
@@ -31,7 +32,7 @@
 			);
 			
      // Initialisation du plugin
-	    $("#form").validate({
+	    $("#form21").validate({
 	    	rules : {
 	        "name":{
 	            required: true,
@@ -59,12 +60,13 @@
 
 	<h1>Add Computer</h1>
 	
-	<form action="addComputer" method="POST">
+	<form:form id="form" action="addComputer" method="POST" commandName="computerDTO">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name">Computer name:</label>
 				<div class="input">
-					<input type="text" name="name" />
+					<form:input type="text" name="name" path="name"/>
+					<font color="red"> <form:errors path="name"></form:errors></font>
 					<span class="help-inline">Required</span>
 					<input size="${errorlist.get(0).length()}" readonly type="text" value="${ errorlist.get(0) }"/>			
 				</div>
@@ -73,7 +75,8 @@
 			<div class="clearfix">
 				<label for="introduced">Introduced date:</label>
 				<div class="input">
-					<input type="date" name="introducedDate" pattern="YY-MM-dd"/>
+					<form:input type="date" name="introducedDate" path="introduced" />
+					<font color="red"> <form:errors path="introduced"></form:errors></font>
 					<span class="help-inline">YYYY-MM-DD</span>
 					<input size="${errorlist.get(1).length()}" readonly type="text" value="${ errorlist.get(1) }"/>				
 				</div>
@@ -81,7 +84,8 @@
 			<div class="clearfix">
 				<label for="discontinued">Discontinued date:</label>
 				<div class="input">
-					<input type="date" name="discontinuedDate" pattern="YY-MM-dd"/>
+					<form:input type="date" name="discontinuedDate" path="discontinued"/>
+					<font color="red"> <form:errors path="discontinued"></form:errors></font>
 					<span class="help-inline">YYYY-MM-DD</span>
 					<input size="${errorlist.get(2).length()}" readonly type="text" value="${ errorlist.get(2) }"/>			
 				</div>
@@ -89,12 +93,13 @@
 			<div class="clearfix">
 				<label for="company">Company Name:</label>
 				<div class="input">
-					<select name="company">
+					<form:select name="company" path="company">
 							<option selected value="0">--</option>
 						<c:forEach items="${companylist}" var="company">
-							<option value="${company.id}">${company.name}</option>
+							<form:option value="${company.id}" path="company">${company.name}</form:option>
+							<font color="red"> <form:errors path="company"></form:errors></font>
 						</c:forEach>
-					</select>
+					</form:select>
 					<input size="${errorlist.get(3).length()}" readonly type="text" value="${ errorlist.get(3) }"/> 
 				</div>
 			</div>
@@ -104,7 +109,7 @@
 			<input type="submit" value="add" class="btn btn-success">
 			or <a href="dashboard" class="btn btn-danger">Cancel</a>
 		</div>
-	</form>
+	</form:form>
 </section>
 
 <jsp:include page="../../include/footer.jsp" />

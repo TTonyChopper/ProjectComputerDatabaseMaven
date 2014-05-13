@@ -2,6 +2,12 @@ package com.excilys.formation.webproject.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.Max;
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * 	id - The String id of the computer in the database
  *  name - The String name of the computer
@@ -86,6 +92,9 @@ public class ComputerDTO implements Serializable {
 	public static DTOBuilder builder() {
 		return new DTOBuilder();
 	}
+	 
+	public ComputerDTO(){
+	}
 	
 	/**
 	 * 
@@ -99,9 +108,16 @@ public class ComputerDTO implements Serializable {
     }	
 
 	//Attributs
+	@NotEmpty
+	@Size(min=0,max=255)
 	private String	name;
+	@Size(min=0,max=255)
+	@Pattern(regexp="^$|(^((((19|[2-9]\\d)\\d{2})-(0[13578]|1[02])-(0[1-9]|[12]\\d|3[01]))|(((19|[2-9]\\d)\\d{2})-(0[13456789]|1[012])-(0[1-9]|[12]\\d|30))|(((19|[2-9]\\d)\\d{2})-02-(0[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))-02-29)).*)")
 	private String introduced;
+	@Size(min=0,max=255)
+	@Pattern(regexp="^$|(^((((19|[2-9]\\d)\\d{2})-(0[13578]|1[02])-(0[1-9]|[12]\\d|3[01]))|(((19|[2-9]\\d)\\d{2})-(0[13456789]|1[012])-(0[1-9]|[12]\\d|30))|(((19|[2-9]\\d)\\d{2})-02-(0[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))-02-29)).*)")
 	private String discontinued;
+	@Size(min=0,max=255)
 	private String company;
 
 	//Accesseurs

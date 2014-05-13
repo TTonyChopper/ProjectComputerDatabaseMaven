@@ -12,10 +12,13 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,11 +76,26 @@ public class MainController {
 			discontinued = new Timestamp(0);	
 		}	
 		
-		Company company = mainService.findCompanyByName(computerDTO.getCompany()); 
+		Company company = mainService.findCompanyById(computerDTO.getCompany()); 
 		
 		return new Computer.CpuBuilder().name(name).introduced(introduced).discontinued(discontinued).company(company).build();	
 	}
 	
+	private void fillUpComputerDTO(ComputerDTO computerDTO) {
+		if (computerDTO.getIntroduced()==null) computerDTO.setIntroduced("");
+		if (computerDTO.getDiscontinued()==null) computerDTO.setDiscontinued("");
+		if (computerDTO.getCompany()==null) computerDTO.setCompany("");
+	}
+	
+	/**
+	 * 
+	 * @param nameFilter
+	 * @param fieldOrder
+	 * @param order
+	 * @param pageNumberS
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/dashboard",method = RequestMethod.GET)
 	public String getDashboard(@RequestParam(value="nameFilter", required=false, defaultValue="") String nameFilter, 
 			 			  @RequestParam(value="fieldOrder", required=false, defaultValue="cpu.id") String fieldOrder, 
@@ -85,7 +103,6 @@ public class MainController {
 			 			  @RequestParam(value="pageNumber", required=false, defaultValue="1") String pageNumberS,
 			              Model model) {		
 
-		System.out.println("I ABOUT TO DO it yay !");
 		PageWrapper pageWrapper = null;
 			
 		//Search OFF
@@ -108,7 +125,6 @@ public class MainController {
 			
 			//Build with all except computerList,namefilter
 			pageWrapper = PageWrapper.builder().pageNumber(pageNumber).fieldOrder(fieldOrder).order(order).computerListSize(computerListSize).build();
-			System.out.println("test loop1"+pageWrapper.toString());
 		
 			//5-Set the computerList
 			mainService.getListComputer(pageWrapper);
@@ -141,7 +157,6 @@ public class MainController {
 			//Build complete PageWrapper
 			pageWrapper = PageWrapper.builder().nameFilter(nameFilter).pageNumber(pageNumber).fieldOrder(fieldOrder).order(order).computerList(computerList).computerListSize(computerListSize).build();		
 		}
-		System.out.println("I DIT it yay !");
 		
 		//Set the PageWrapper
 		model.addAttribute("pageWrapper", pageWrapper);
@@ -149,55 +164,65 @@ public class MainController {
 		return "dashboard";
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param introduced
+	 * @param discontinued
+	 * @param company
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/addComputer",method = RequestMethod.GET)
-	public String getAdd(@RequestParam(value="name", required=false, defaultValue="") String name, 
-			 			   @RequestParam(value="introducedDate", required=false, defaultValue="") String introduced, 
-			 			   @RequestParam(value="discontinuedDate", required=false, defaultValue="") String discontinued, 
-			 			   @RequestParam(value="company", required=false, defaultValue="") String company,
-			 			   Model model) {			
-		
+	public ComputerDTO getAdd(Model model) {		
+			 	
 		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
 		model.addAttribute("companylist", companylist);
 		model.addAttribute("companylistsize", companylist.size());
 		
-		return "addComputer";
+		return new ComputerDTO();
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param introduced
+	 * @param discontinued
+	 * @param companyidS
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/addComputer",method = RequestMethod.POST)
-	public String postAdd(@RequestParam(value="name", required=false, defaultValue="") String name, 
-			 			    @RequestParam(value="introducedDate", required=false, defaultValue="") String introduced, 
-			 			    @RequestParam(value="discontinuedDate", required=false, defaultValue="") String discontinued, 
-			 			    @RequestParam(value="company", required=false, defaultValue="") String companyidS,
-			                Model model) {		
-			
-		Long companyid = Long.decode(companyidS);
-		Company company = mainService.findCompanyById(companyid);
-		ComputerDTO computerDTO = ComputerDTO.builder().name(name).introduced(introduced).discontinued(discontinued).company(company.getName()).build();
+	public String postAdd(@ModelAttribute @Valid ComputerDTO computerDTO,BindingResult result,
+						   Model model) {		
+		fillUpComputerDTO(computerDTO);
 		Computer computer = retrieveComputer(computerDTO);
+		List errorlist = Validator.check(computerDTO,computer.getCompany().getName());
+		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
+		model.addAttribute("companylist", companylist);
+		model.addAttribute("companylistsize", companylist.size());
+		model.addAttribute("errorlist", errorlist);
 		
-		List errorlist = Validator.check(computerDTO);
-		
-		if (!(Validator.validate(errorlist))) {
-			
-			List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
-			model.addAttribute("companylist", companylist);
-			model.addAttribute("companylistsize", companylist.size());
-			model.addAttribute("errorlist", errorlist);
-			System.out.println("NOT VALIDATED");
-			
-			return "../../index";
-		}
+		if( (result.hasErrors()) || (!(Validator.validate(errorlist))) ) {			
+	
+	    	return "addComputer";
+	    }
 		else { 
-			System.out.println("VALIDATED");
 			mainService.insertComputer(computer);
 			
 			return "../../index";
 		}
 	}
 	
+	/**
+	 * 
+	 * @param eid
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/editComputer",method = RequestMethod.GET)
-	public String getEdit(@RequestParam(value="eid", required=true, defaultValue="") String eid, 
-			                Model model) {
+	public ComputerDTO getEdit(@RequestParam(value="eid", required=true, defaultValue="") String eid, 
+			               Model model) {
 		
 		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
 		model.addAttribute("companylist", companylist);
@@ -208,42 +233,50 @@ public class MainController {
 		Computer editedcomputer = mainService.findComputer(editedid);
 		model.addAttribute("ecomputer", editedcomputer);
 		
-		return "editComputer";
+		return new ComputerDTO();
 	}
 	
+	/**
+	 * 
+	 * @param eid
+	 * @param name
+	 * @param introduced
+	 * @param discontinued
+	 * @param companyidS
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/editComputer",method = RequestMethod.POST)
-	public String postEdit(@RequestParam(value="eid", required=true) String eid,
-							@RequestParam(value="name", required=false) String name, 
-			 			    @RequestParam(value="introducedDate", required=false) String introduced, 
-			 			    @RequestParam(value="discontinuedDate", required=false) String discontinued, 
-			 			    @RequestParam(value="company", required=false, defaultValue="") String companyidS,
-			                Model model) {
+	public String postEdit(@ModelAttribute @Valid ComputerDTO computerDTO,BindingResult result,
+					 		@RequestParam(value="eid", required=true) String eid,
+						    Model model) {
 		
-		Long savedid = Long.decode(eid);
-		Long companyid = Long.decode(companyidS);
-		Company company = mainService.findCompanyById(companyid);
-		
-		ComputerDTO computerDTO = ComputerDTO.builder().name(name).introduced(introduced).discontinued(discontinued).company(company.getName()).build();
+		fillUpComputerDTO(computerDTO);		
+		Long savedid = Long.decode(eid);		
 		Computer computer = retrieveComputer(computerDTO);
 		
-		List errorlist = Validator.check(computerDTO);
-		if (!(Validator.validate(errorlist))) {
-			model.addAttribute("errorlist", errorlist);
-			model.addAttribute("editedcomputer", mainService.findComputer(savedid));
-			
-			List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
-			model.addAttribute("companylist", companylist);
-			model.addAttribute("companylistsize", companylist.size());
-			
-			return "editComputer";
-		}
+		List errorlist = Validator.check(computerDTO,computer.getCompany().getName());
+		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
+		model.addAttribute("companylist", companylist);
+		model.addAttribute("companylistsize", companylist.size());
+		model.addAttribute("errorlist", errorlist);
+		
+		if( (result.hasErrors()) || (!(Validator.validate(errorlist))) ) {					
+	    	return "addComputer";
+	    }
 		else {	
 			mainService.editComputer(computer,savedid);	
 		 
 			return "../../index";
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param rid
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/removeComputer",method = RequestMethod.GET)
 	public String getRemove(@RequestParam(value="rid", required=true) String rid,
 			                Model model) {
@@ -260,6 +293,12 @@ public class MainController {
 		}	
 	}
 	
+	/**
+	 * 
+	 * @param rid
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/removeComputer",method = RequestMethod.POST)
 	public String postRemove(@RequestParam(value="rid", required=true) String rid,
 			                Model model) {

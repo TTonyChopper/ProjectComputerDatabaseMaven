@@ -54,6 +54,8 @@ public class Company implements Serializable{
 	public static CpyBuilder builder() {
 		return new CpyBuilder();
 	}
+	public Company() {    
+    }
 	/**
 	 * 
 	 * @param builder

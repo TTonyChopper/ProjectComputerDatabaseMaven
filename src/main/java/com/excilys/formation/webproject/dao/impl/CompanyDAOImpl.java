@@ -48,19 +48,19 @@ public class CompanyDAOImpl implements CompanyDAO{
 		if (id==0) return Company.builder().name("").build();	
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
-		Company company = null;
+		Company company = new Company();
 
 		try {
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE id = ?;");
 			stmt.setString(1,String.valueOf(id));
-			System.out.println("stmt "+stmt.toString());
+
 			rs = stmt.executeQuery();	
 			
 			while(rs.next()){
 				company = Company.builder().id(id).name(rs.getString("name")).build();				
 			}
-		
+			
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
@@ -75,7 +75,7 @@ public class CompanyDAOImpl implements CompanyDAO{
 		if (name == "") return Company.builder().build();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
-		Company company = null;
+		Company company = new Company();
 
 		try {
 			cn = cnFactory.getConnection();

@@ -20,7 +20,7 @@ public class Validator {
 	 * @param computerDTO
 	 * @return
 	 */
-	public static List check(ComputerDTO computerDTO) {
+	public static List check(ComputerDTO computerDTO,String cpyname) {
 		List<String> errorlist = new ArrayList<>(4);
 		
 		StringBuilder sb = new StringBuilder();
@@ -34,7 +34,7 @@ public class Validator {
 		sb.append(checkDiscontinued(computerDTO.getDiscontinued(),computerDTO.getIntroduced(),errorintroduced)).append(" : ").append(computerDTO.getDiscontinued());
 		errorlist.add(2,new String (sb));
 		sb = new StringBuilder();
-		sb.append(checkCompany(computerDTO.getCompany())).append(" : ").append(computerDTO.getCompany());
+		sb.append(checkCompany(computerDTO.getCompany())).append(" : ").append(cpyname);
 		errorlist.add(3,new String (sb));
 		
 		return errorlist;
@@ -62,7 +62,7 @@ public class Validator {
 		String status = "OK";
 		
 		if (name == null) throw new IllegalStateException("The name entry is null");
-		else if (name == "") status = "The name entry is void";
+		else if (name.isEmpty()) status = "The name entry is void";
 		else if (name.length() > 255) status = "The name entry is too long";
 		return status;
 	}
@@ -75,7 +75,7 @@ public class Validator {
 	private static String checkIntroduced(String introduced) {
 		String status = "OK";
 		
-		if (introduced.equals("")) return "OK";
+		if (introduced.isEmpty()) return "OK";
 		else if (introduced.length() < 10) status = "The introduced entry is too long";
 		else introduced = introduced.substring(0,10);
 
@@ -101,7 +101,7 @@ public class Validator {
 	private static String checkDiscontinued(String discontinued,String introduced,String errorintroduced) {
 		String status = "OK";
 		
-		if (discontinued.equals("")) return "OK";
+		if (discontinued.isEmpty()) return "OK";
 		else if (discontinued.length() < 10) status = "The discontinued entry is too long";
 		else discontinued = discontinued.substring(0,10);
 		if (introduced == null) throw new IllegalStateException("The discontinued entry is null");
@@ -111,7 +111,7 @@ public class Validator {
 		if (discontinued.length() > 255) status = "The discontinued entry is too long";
 		else if (!discontinued.matches(pattern) ) status="The discontinued entry is invalid";  
 		else if (!preciseCheck(discontinued) ) status="The discontinued entry is invalid"; 
-		else if ( (introduced != "") && errorintroduced.substring(0,2).equals("OK") ) status = preciseCheck(discontinued,introduced);
+		else if ( (!introduced.isEmpty()) && errorintroduced.substring(0,2).equals("OK") ) status = preciseCheck(discontinued,introduced);
 
 		return status;
 	}
