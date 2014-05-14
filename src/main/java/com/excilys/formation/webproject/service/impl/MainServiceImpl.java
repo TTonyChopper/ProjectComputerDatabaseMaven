@@ -37,7 +37,7 @@ public class MainServiceImpl implements MainService{
 	 * @param cn
 	 * @param S
 	 */
-	private void stopTransaction(Connection cn,String S) {
+	private void endTransaction(Connection cn,String S) {
 		try {
 			cn.setAutoCommit(true);
 		} catch (SQLException e) {
@@ -49,7 +49,9 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public Computer findComputer(Long id) {
-		return cpuDAO.find(id);
+		Computer comp = cpuDAO.find(id);
+		cnFactory.disconnect();
+		return comp;
 	}
 	/**
 	 * 
@@ -57,7 +59,9 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public Integer getListComputerSize() {
-		return cpuDAO.getListSize();	
+		Integer size = cpuDAO.getListSize();
+		cnFactory.disconnect();
+		return size;	
 	}
 	/**
 	 * 
@@ -66,6 +70,7 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void getListComputer(PageWrapper pageWrapper) {
 		cpuDAO.getList(pageWrapper);
+		cnFactory.disconnect();	
 	}
 	/**
 	 * 
@@ -74,7 +79,9 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public Integer getListComputerSizeWithName(PageWrapper pageWrapper) {
-		return cpuDAO.getListSizeWithName(pageWrapper);
+		Integer size = cpuDAO.getListSizeWithName(pageWrapper);
+		cnFactory.disconnect();
+		return size;
 	}
 	/**
 	 * 
@@ -83,7 +90,9 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public List<Computer> getListComputerWithName(PageWrapper pageWrapper) {
-		return cpuDAO.getListWithName(pageWrapper);
+		List<Computer> liste = cpuDAO.getListWithName(pageWrapper);
+		cnFactory.disconnect();
+		return liste;
 	}
 	/**
 	 * 
@@ -97,21 +106,18 @@ public class MainServiceImpl implements MainService{
 		//Transaction
 		try {
 			cn.setAutoCommit(false);
-		}catch (SQLException e) {
-			throw new IllegalStateException("Error while setting auto-commit to false on insertion");
-		}
-		try {
 			cpuDAO.create(comp);
-		} catch (SQLException e2) {
+			cn.commit();
+		} catch (SQLException e) {
 			try {
 				cn.rollback();
-			} catch (SQLException e3) {
-				stopTransaction(cn," on insertion");
+			} catch (SQLException e2) {
+				throw new IllegalStateException("Could not roll back on creation");
 			}
-			throw new IllegalStateException("Error on insertion");
 		} finally {
-			stopTransaction(cn," on insertion");
-		}
+			endTransaction(cn," on creation");
+			cnFactory.disconnect();
+		}	
 	}	
 	/**
 	 * 
@@ -126,20 +132,17 @@ public class MainServiceImpl implements MainService{
 		//Transaction
 		try {
 			cn.setAutoCommit(false);
-		}catch (SQLException e) {
-			throw new IllegalStateException("Error while setting auto-commit to false on edition");
-		}
-		try {
 			cpuDAO.save(comp,id);
-		} catch (SQLException e2) {
+			cn.commit();
+		} catch (SQLException e) {
 			try {
 				cn.rollback();
-			} catch (SQLException e3) {
-				stopTransaction(cn," on edition");
+			} catch (SQLException e2) {
+				throw new IllegalStateException("Could not roll back on save");
 			}
-			throw new IllegalStateException("Error while setting auto-commit to false on edition");
 		} finally {
-			stopTransaction(cn," on edition");
+			endTransaction(cn," on save");
+			cnFactory.disconnect();
 		}	
 	}
 	/**
@@ -154,20 +157,17 @@ public class MainServiceImpl implements MainService{
 		//Transaction
 		try {
 			cn.setAutoCommit(false);
-		}catch (SQLException e) {
-			throw new IllegalStateException("Errorcnfactory while setting auto-commit to false on removal");
-		}
-		try {
 			cpuDAO.delete(id);
-		} catch (SQLException e2) {
+			cn.commit();
+		} catch (SQLException e) {
 			try {
 				cn.rollback();
-			} catch (SQLException e3) {
-				stopTransaction(cn," on removal");
+			} catch (SQLException e2) {
+				throw new IllegalStateException("Could not roll back on deletion");
 			}
-			throw new IllegalStateException("Error on removal");
 		} finally {
-			stopTransaction(cn," on removal");
+			endTransaction(cn," on deletion");
+			cnFactory.disconnect();
 		}	
 	}
 	/**
@@ -175,12 +175,11 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public Company findCompanyById(String id) {
-		Connection cn = cnFactory.getConnection();
 		Company comp = new Company();
 		Long idL = Long.decode(id);
 		if (idL > 0) comp = cpyDAO.findById(idL);
 
-		cnFactory.closeConnection(cn);
+		cnFactory.disconnect();
 		return comp; 
 	}
 	/**
@@ -189,9 +188,8 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public List<Company> getListCompany() {
-		Connection cn = cnFactory.getConnection();
 		ArrayList<Company> list  = (ArrayList<Company>) cpyDAO.getList();
-		cnFactory.closeConnection(cn);
+		cnFactory.disconnect();
 		return list; 
 	}
 	/**
@@ -206,20 +204,17 @@ public class MainServiceImpl implements MainService{
 		//Transaction
 		try {
 			cn.setAutoCommit(false);
-		}catch (SQLException e) {
-			throw new IllegalStateException("Error while setting auto-commit to false on company insertion");
-		}
-		try {
 			cpyDAO.create(comp);
+			cn.commit();
+		} catch (SQLException e) {
 			try {
 				cn.rollback();
 			} catch (SQLException e2) {
-				stopTransaction(cn," on company insertion");
+				throw new IllegalStateException("Could not roll back on save");
 			}
-		} catch (SQLException e3) {
-			throw new IllegalStateException("Error on company insertion");
 		} finally {
-			stopTransaction(cn," on company insertion");
-		}	
+			endTransaction(cn," on save");
+			cnFactory.disconnect();
+		}		
 	}
 }

@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <jsp:include page="../../include/header.jsp" />
 
 <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
@@ -57,12 +58,12 @@
 
 <section id="main">
 
-	<h1>Edit Computer</h1>
+	<h1><spring:message code="editComp"/></h1>
 	
 	<form id="form" action="editComputer" method="POST">
 		<fieldset>
 			<div class="clearfix">
-				<label for="name">Computer name:</label>
+				<label for="name"><spring:message code="name"/></label>
 				<div class="input">
 					<input type="text" name="name" value="${ecomputer.name}"/>
 					<span class="help-inline">Required</span>
@@ -71,7 +72,7 @@
 			</div>
 	
 			<div class="clearfix">
-				<label for="introduced">Introduced date:</label>
+				<label for="introduced"><spring:message code="introduced"/></label>
 				<div class="input">
 					<input id="introducedDate" type="text" name="introducedDate" value="${ecomputer.introduced}" />
 					<span class="help-inline">YYYY-MM-DD</span>
@@ -79,7 +80,7 @@
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="discontinued">Discontinued date:</label>
+				<label for="discontinued"><spring:message code="discontinued"/></label>
 				<div class="input">
 					<input type="text" name="discontinuedDate" value="${ecomputer.discontinued}"/>
 					<span class="help-inline">YYYY-MM-DD</span>
@@ -87,7 +88,7 @@
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="company">Company Name:</label>
+				<label for="company"><spring:message code="company"/></label>
 				<div class="input">
 					<select name="company">
 							<option selected value="${ecomputer.company.id}">${ecomputer.company.name}</option>
@@ -102,8 +103,8 @@
 		
 		<div class="actions">
 			<input type="hidden" name="eid" value="${ecomputer.id}">
-			<input type="submit" value="edit" class="btn btn-success">			
-			or <a href="dashboard" class="btn btn-danger">Cancel</a>
+			<input type="submit" value="<spring:message code="confirm"/>" class="btn btn-success">			
+			<spring:message code="or"/> <a href="dashboard" class="btn btn-danger"><spring:message code="cancel"/></a>
 		</div>
 	</form>
 </section>

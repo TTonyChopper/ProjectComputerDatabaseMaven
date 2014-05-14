@@ -30,23 +30,8 @@ public interface ConnectionFactory {
 	public void closeResultSet(ResultSet rs);
 	/**
 	 * 
-	 * @param conn
 	 */
-	public void closeConnection(Connection conn);
-	/**
-	 * 
-	 * @param stmt
-	 * @param rs
-	 * @param conn
-	 */
-	public void disconnect(Statement stmt,Connection conn);
-	/**
-	 * 
-	 * @param stmt
-	 * @param rs
-	 * @param conn
-	 */
-	public void disconnect(Statement stmt,ResultSet rs,Connection conn);
+	public void disconnect();
 	/**
 	 * 
 	 * @return

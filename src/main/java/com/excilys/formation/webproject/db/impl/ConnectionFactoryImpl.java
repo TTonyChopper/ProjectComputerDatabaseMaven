@@ -104,38 +104,17 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
 	 * @param conn
 	 */
 	@Override
-	public void closeConnection(Connection conn) {
+	public void disconnect() {
 		if(threadConnection.get()!=null){
 			try {
 				threadConnection.get().close();
 			} catch (SQLException e) {
 				throw new IllegalStateException("Could not close connection");
-			} finally{
+			}
+			finally {
 				threadConnection.remove();
 			}
 		}
-	}
-	/**
-	 * 
-	 * @param stmt
-	 * @param rs
-	 */
-	@Override
-	public void disconnect(Statement stmt,Connection cn) {
-		closeStatement(stmt);
-		closeConnection(cn);
-	}
-	/**
-	 * 
-	 * @param stmt
-	 * @param rs
-	 * @param cn
-	 */
-	@Override
-	public void disconnect(Statement stmt,ResultSet rs,Connection cn) {
-		closeStatement(stmt);
-		closeResultSet(rs);
-		closeConnection(cn);
 	}
 	/**
 	 * 

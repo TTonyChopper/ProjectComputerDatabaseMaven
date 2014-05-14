@@ -1,5 +1,6 @@
 <%@ tag body-content="empty" %> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ attribute type="com.excilys.formation.webproject.common.PageWrapper" name="pageWrapper" %>
 
 
@@ -8,23 +9,23 @@
 				<tr>
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
-					<th> Computer Name 							
+					<th> <spring:message code="name"/> 							
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>				 					 	
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.name&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>			
 					</th>			
 					<!-- Table header for Introduced Date -->
-					<th>Introduced Date		
+					<th> <spring:message code="introduced"/> 			
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.introduced&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
 					</th>	
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued Date 	
+					<th> <spring:message code="discontinued"/>
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpu.discontinued&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>	
 
 					</th>
 					<!-- Table header for Company Name-->
-					<th> Company 		
+					<th> <spring:message code="company"/> 		
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></a>					 					 	
 						<a href="dashboard?nameFilter=${pageWrapper.nameFilter}&fieldOrder=cpy.name&order=DESC" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span></a>		
 					</th>				
@@ -46,12 +47,12 @@
 					<td>${cpu.discontinued}</td>
 					<td>${cpu.company.name}</td>
 					<td> <form action="editComputer" method="GET">
-						 <input type="submit" class="btn btn-warning" name="sbutton" value="Edit" >
+						 <input type="submit" class="btn btn-warning" name="sbutton" value="<spring:message code="pagination.editComp"/>" >
 						 <input type="hidden" name="eid" value="${cpu.id}">
 						 </form>
 					</td>
 					<td> <form action="removeComputer" method="GET">
-						 <input type="submit" class="btn btn-danger" name="rbutton" value="Delete" >
+						 <input type="submit" class="btn btn-danger" name="rbutton" value="<spring:message code="pagination.deleteComp"/>" >
 						 <input type="hidden" name="rid" value="${cpu.id}">
 						 </form>
 					</td>

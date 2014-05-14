@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,6 +14,6 @@
 <body>
 	<header class="navbar navbar-fixed-top navbar-inverse">
 		<h1 class="fill">
-			<a href="index.jsp"> Application - Computer Database </a>
+			<a href="index.jsp"> <spring:message code="header.name"/> </a>
 		</h1>
 	</header>

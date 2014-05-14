@@ -66,7 +66,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return company;
 	}
@@ -94,7 +95,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return company;
 	}
@@ -120,7 +122,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("Error while querying the database");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return liste;
 	}
@@ -140,6 +143,6 @@ public class CompanyDAOImpl implements CompanyDAO{
 		stmt.setString(2,comp.getName());
 		stmt.executeUpdate();
 
-		cnFactory.disconnect(stmt,cn);	
+		cnFactory.closeStatement(stmt);	
 	}
 }

@@ -43,7 +43,6 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	private List<Computer> extractFromResultSet(ResultSet rs) throws SQLException{
 		List<Computer> liste  = new ArrayList<>();
-
 		while ((rs != null)&&rs.next()) {
 			CpuBuilder b = Computer.builder().id(new Long(rs.getLong(1))).name(rs.getString(2));
 			try {
@@ -74,9 +73,9 @@ public class ComputerDAOImpl implements ComputerDAO{
 
 		try {
 			cn = cnFactory.getConnection();
-			stmt = cn.prepareStatement("SELECT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu"
+			stmt = cn.prepareStatement("SELECT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
 					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.id = ?");
-			stmt.setString(1,String.valueOf(id));	
+			stmt.setLong(1,id);	
 
 			rs = stmt.executeQuery();
 
@@ -84,11 +83,12 @@ public class ComputerDAOImpl implements ComputerDAO{
 
 			if (liste.size() == 0) computer = null;
 			else computer = liste.get(0);
-
+		
 		} catch (SQLException e) {
-			throw new IllegalStateException("SQL Exception on ResultSet");
+			throw new IllegalStateException("SQL Exception on ResultSetlk,l");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return computer;
 	}
@@ -117,7 +117,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return computerListSize;
 	}
@@ -145,7 +146,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return liste;
 	}
@@ -178,7 +180,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 	}
 	/**
@@ -209,7 +212,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return computerListSize;	
 	}
@@ -244,7 +248,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs,cn);
+			cnFactory.closeResultSet(rs);
+			cnFactory.closeStatement(stmt);
 		}
 		return liste;	
 	}
@@ -268,7 +273,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 		else stmt.setLong(4,companyid);
 
 		stmt.executeUpdate();
-		cnFactory.disconnect(stmt,cn);	
+		cnFactory.closeStatement(stmt);	
 	}
 	/**
 	 * 
@@ -292,7 +297,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 		stmt.setLong(5,id);
 
 		stmt.executeUpdate();
-		cnFactory.disconnect(stmt,cn);
+		cnFactory.closeStatement(stmt);
 	}
 	/**
 	 * 
@@ -309,6 +314,6 @@ public class ComputerDAOImpl implements ComputerDAO{
 		stmt.setLong(1,id);
 
 		stmt.executeUpdate();
-		cnFactory.disconnect(stmt,cn);
+		cnFactory.closeStatement(stmt);
 	}
 }
