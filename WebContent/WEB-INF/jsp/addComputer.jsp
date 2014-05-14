@@ -32,7 +32,7 @@
 			);
 			
      // Initialisation du plugin
-	    $("#form21").validate({
+	    $("#form").validate({
 	    	rules : {
 	        "name":{
 	            required: true,

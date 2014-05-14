@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.webproject.dao.CompanyDAO;
-import com.excilys.formation.webproject.db.impl.ConnectionFactoryImpl;
+import com.excilys.formation.webproject.db.ConnectionFactory;
 import com.excilys.formation.webproject.om.Company;
 
 /**
@@ -24,16 +24,16 @@ import com.excilys.formation.webproject.om.Company;
 public class CompanyDAOImpl implements CompanyDAO{
 
 	@Autowired
-	private ConnectionFactoryImpl cnFactory;
-	
+	private ConnectionFactory cnFactory;
+
 	/**
 	 * 
 	 * @param rs The ResulSet from the query on the database Root
 	 * @return A List of Company
 	 */
-	public List extractFromResultSet(ResultSet rs) throws SQLException{
-		ArrayList<Company> liste  = new ArrayList<>();
-		
+	private List<Company> extractFromResultSet(ResultSet rs) throws SQLException{
+		List<Company> liste  = new ArrayList<>();
+
 		while (rs.next()) {
 			Company p = Company.builder().id(new Long(rs.getLong(1))).name(rs.getString(2)).build();	
 
@@ -44,53 +44,57 @@ public class CompanyDAOImpl implements CompanyDAO{
 	/**
 	 * @return The Company in the table company matching the id
 	 */
-	public Company findById(Connection cn,Long id) {
+	@Override
+	public Company findById(Long id) {
 		if (id==0) return Company.builder().name("").build();	
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Company company = new Company();
+		Connection cn = null;
 
 		try {
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE id = ?;");
-			stmt.setString(1,String.valueOf(id));
+			stmt.setLong(1,id);
 
 			rs = stmt.executeQuery();	
-			
+
 			while(rs.next()){
 				company = Company.builder().id(id).name(rs.getString("name")).build();				
 			}
-			
+
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return company;
 	}
 	/**
 	 * @return The Company in the table company matching the name
 	 */
-	public Company findByName(Connection cn,String name) {
+	@Override
+	public Company findByName(String name) {
 		if (name == "") return Company.builder().build();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Company company = new Company();
+		Connection cn = null;
 
 		try {
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE name = ?;");
 			stmt.setString(1,name);
 			rs = stmt.executeQuery();	
-			
+
 			while(rs.next()){
 				company = Company.builder().id(rs.getLong("id")).name(name).build();				
 			}
-		
+
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return company;
 	}
@@ -98,23 +102,25 @@ public class CompanyDAOImpl implements CompanyDAO{
 	 * 
 	 * @return A List<Company> of Company in the table company
 	 */
-	public List getList(Connection cn) {
-		ArrayList<Company> liste  = new ArrayList<>();
+	@Override
+	public List<Company> getList() {
+		List<Company> liste  = new ArrayList<>();
 		ResultSet rs = null ;
 		Statement stmt = null;
+		Connection cn = null;
 
 		try {
 
 			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM company;");
-			
+
 			liste = (ArrayList<Company>) extractFromResultSet(rs);
 
 		} catch (SQLException e) {
-			 throw new IllegalStateException("Error while querying the database");
+			throw new IllegalStateException("Error while querying the database");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return liste;
 	}
@@ -122,17 +128,18 @@ public class CompanyDAOImpl implements CompanyDAO{
 	 * 
 	 * @param comp A Company to be added in the table company
 	 */
-	public void insert(Connection cn,Company comp) throws SQLException{
+	@Override
+	public void create(Company comp) throws SQLException{
 
 		PreparedStatement stmt = null;
-		
-		cn = cnFactory.getConnection();
+
+		Connection cn = cnFactory.getConnection();
 		stmt = cn.prepareStatement("INSERT into company(id,name) VALUES(?,?);");
 
-		stmt.setString(1,String.valueOf(comp.getId()));
+		stmt.setLong(1,comp.getId());
 		stmt.setString(2,comp.getName());
 		stmt.executeUpdate();
-			
-		cnFactory.closeStatement(stmt);	
+
+		cnFactory.disconnect(stmt,cn);	
 	}
 }

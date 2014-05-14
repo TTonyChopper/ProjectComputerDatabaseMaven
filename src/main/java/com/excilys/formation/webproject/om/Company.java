@@ -1,24 +1,17 @@
 package com.excilys.formation.webproject.om;
 
-import java.io.Serializable;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 /**
  * 
  * @author excilys
  *
  */
-@Component
-@Scope("Prototype")
-public class Company implements Serializable{
-	
-/*****************************Builder*****************************/
+public class Company{
+
+	/*****************************Builder*****************************/
 	public static class CpyBuilder {
 		private Long id;
 		private String	name;
-		
+
 		/**
 		 * 
 		 * @param id
@@ -41,12 +34,12 @@ public class Company implements Serializable{
 		 * 
 		 * @return
 		 */
-	    public Company build() {
-	        return new Company(this);
-	    }
+		public Company build() {
+			return new Company(this);
+		}
 	}
-/*****************************Builder*****************************/
-	
+	/*****************************Builder*****************************/
+
 	/**
 	 * 
 	 * @return
@@ -55,15 +48,15 @@ public class Company implements Serializable{
 		return new CpyBuilder();
 	}
 	public Company() {    
-    }
+	}
 	/**
 	 * 
 	 * @param builder
 	 */
 	private Company(CpyBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name;     
-    }
+		this.id = builder.id;
+		this.name = builder.name;     
+	}
 
 	//Attributs
 	private Long id;

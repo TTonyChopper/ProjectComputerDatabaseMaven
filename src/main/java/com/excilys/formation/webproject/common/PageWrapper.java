@@ -1,10 +1,6 @@
 package com.excilys.formation.webproject.common;
 
-import java.io.Serializable;
 import java.util.List;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.excilys.formation.webproject.om.Computer;
 
@@ -13,11 +9,9 @@ import com.excilys.formation.webproject.om.Computer;
  * @author excilys
  *
  */
-@Component
-@Scope("Prototype")
-public class PageWrapper implements Serializable {
+public class PageWrapper{
 
-/*****************************Builder*****************************/
+	/*****************************Builder*****************************/
 	/**
 	 * 
 	 * @author excilys
@@ -30,7 +24,7 @@ public class PageWrapper implements Serializable {
 		private String order;
 		private List<Computer> computerList;
 		private Integer computerListSize;
-		
+
 		/**
 		 * 
 		 * @param nameFilter
@@ -90,11 +84,11 @@ public class PageWrapper implements Serializable {
 		 * @return
 		 */
 		public PageWrapper build() {
-		    return new PageWrapper(this);
+			return new PageWrapper(this);
 		}
 	}
-/*****************************Builder*****************************/
-	
+	/*****************************Builder*****************************/
+
 	/**
 	 * 
 	 * @return
@@ -102,19 +96,18 @@ public class PageWrapper implements Serializable {
 	public static PwBuilder builder() {
 		return new PwBuilder();
 	}
-	
 	/**
 	 * 
 	 * @param builder
 	 */
 	private PageWrapper(PwBuilder builder) {
 		this.nameFilter = builder.nameFilter;
-        this.pageNumber = builder.pageNumber;
-        this.fieldOrder = builder.fieldOrder; 
-        this.order = builder.order;
-        this.computerList = builder.computerList;
-        this.computerListSize = builder.computerListSize;
-    }	
+		this.pageNumber = builder.pageNumber;
+		this.fieldOrder = builder.fieldOrder; 
+		this.order = builder.order;
+		this.computerList = builder.computerList;
+		this.computerListSize = builder.computerListSize;
+	}	
 
 	//Attributs
 	private String nameFilter;
@@ -123,66 +116,52 @@ public class PageWrapper implements Serializable {
 	private String order;
 	private List<Computer> computerList;
 	private Integer computerListSize;
-	public final static int PAGE_INCREMENT[]={-10,-5,-2,-1,0,1,2,5,10};
-	public final static int PER_PAGE = 25;
-	
+	private final static int PAGE_INCREMENT[]={-10,-5,-4,-3,-2,-1,0,1,2,3,4,5,10};
+	private final static int PER_PAGE = 25;
+
 	//Auto-generations		
 	public int[] getPageIncrement() {
 		return PAGE_INCREMENT;
 	}
-	
 	public int getPerPage() {
 		return PER_PAGE;
 	}
-	
 	public String getNameFilter() {
 		return nameFilter;
 	}
-
 	public void setNameFilter(String nameFilter) {
 		this.nameFilter = nameFilter;
 	}
-
 	public Integer getPageNumber() {
 		return pageNumber;
 	}
-
 	public void setPageNumber(Integer pageNumber) {
 		this.pageNumber = pageNumber;
 	}
-
 	public String getFieldOrder() {
 		return fieldOrder;
 	}
-
 	public void setFieldOrder(String fieldOrder) {
 		this.fieldOrder = fieldOrder;
 	}
-
 	public String getOrder() {
 		return order;
 	}
-
 	public void setOrder(String order) {
 		this.order = order;
 	}
-
 	public List<Computer> getComputerList() {
 		return computerList;
 	}
-
 	public void setComputerList(List<Computer> computerList){
 		this.computerList = computerList;
 	}
-
 	public Integer getComputerListSize() {
 		return computerListSize;
 	}
-
 	public void setComputerListSize(Integer computerListSize) {
 		this.computerListSize = computerListSize;
 	}
-
 	@Override
 	public String toString() {
 		return "PageWrapper [nameFilter=" + nameFilter + ", pageNumber="
@@ -190,7 +169,6 @@ public class PageWrapper implements Serializable {
 				+ order + ", computerList=" + computerList
 				+ ", computerListSize=" + computerListSize + "]";
 	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -209,7 +187,6 @@ public class PageWrapper implements Serializable {
 				+ ((pageNumber == null) ? 0 : pageNumber.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

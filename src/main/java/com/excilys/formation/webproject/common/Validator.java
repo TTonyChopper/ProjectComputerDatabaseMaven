@@ -3,8 +3,6 @@ package com.excilys.formation.webproject.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.excilys.formation.webproject.dto.ComputerDTO;
 
 /**
@@ -12,17 +10,16 @@ import com.excilys.formation.webproject.dto.ComputerDTO;
  * @author excilys
  *
  */
-@Component
 public class Validator {
-	
+
 	/**
 	 * 
 	 * @param computerDTO
 	 * @return
 	 */
-	public static List check(ComputerDTO computerDTO,String cpyname) {
-		List<String> errorlist = new ArrayList<>(4);
-		
+	public static List<String> check(ComputerDTO computerDTO,String cpyname) {
+		List<String> errorlist = new ArrayList<>();
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(checkName(computerDTO.getName())).append(" : ").append(computerDTO.getName());
 		errorlist.add(0,new String (sb));
@@ -36,23 +33,21 @@ public class Validator {
 		sb = new StringBuilder();
 		sb.append(checkCompany(computerDTO.getCompany())).append(" : ").append(cpyname);
 		errorlist.add(3,new String (sb));
-		
+
 		return errorlist;
 	}
-
 	/**
 	 * 
 	 * @param errorlist
 	 * @return
 	 */
-	public static boolean validate(List errorlist) {
-		
-		for (int i = 0;i < 4;i++) {		
+	public static boolean validate(List<String> errorlist) {
+
+		for (int i = 0;i < errorlist.size();i++) {		
 			if (!(((String) errorlist.get(i)).substring(0,2).equals("OK"))) return false;
 		}
 		return true;
 	}
-	
 	/**
 	 * 
 	 * @param name
@@ -60,13 +55,12 @@ public class Validator {
 	 */
 	private static String checkName(String name) {
 		String status = "OK";
-		
+
 		if (name == null) throw new IllegalStateException("The name entry is null");
 		else if (name.isEmpty()) status = "The name entry is void";
 		else if (name.length() > 255) status = "The name entry is too long";
 		return status;
 	}
-	
 	/**
 	 * 
 	 * @param introduced
@@ -74,7 +68,7 @@ public class Validator {
 	 */
 	private static String checkIntroduced(String introduced) {
 		String status = "OK";
-		
+
 		if (introduced.isEmpty()) return "OK";
 		else if (introduced.length() < 10) status = "The introduced entry is too long";
 		else introduced = introduced.substring(0,10);
@@ -87,10 +81,9 @@ public class Validator {
 		else {
 			if (!preciseCheck(introduced)) status="The introduced entry is invalid";
 		}
-		
+
 		return status;
 	}
-	
 	/**
 	 * 
 	 * @param introduced
@@ -100,7 +93,7 @@ public class Validator {
 	 */
 	private static String checkDiscontinued(String discontinued,String introduced,String errorintroduced) {
 		String status = "OK";
-		
+
 		if (discontinued.isEmpty()) return "OK";
 		else if (discontinued.length() < 10) status = "The discontinued entry is too long";
 		else discontinued = discontinued.substring(0,10);
@@ -115,7 +108,6 @@ public class Validator {
 
 		return status;
 	}
-	
 	/**
 	 * 
 	 * @param company
@@ -123,27 +115,25 @@ public class Validator {
 	 */
 	private static String checkCompany(String company) {
 		String status = "OK";
-		
+
 		if (company == null) throw new IllegalStateException("null");
 		else if (company.length() > 255) status = "too long";
 		return status;
 	}
-	
 	private static boolean preciseCheck(String date) {	
 		date = date.substring(0,10);
-		
-	    int year = Integer.parseInt(date.substring(0,4));
+
+		int year = Integer.parseInt(date.substring(0,4));
 		int month = Integer.parseInt(date.substring(5,7));
 		int day = Integer.parseInt(date.substring(8,10));
-	 
+
 		if (day > 31) return false; 
 		else if ( (day == 31) && ( (month == 2) || (month == 4) || (month == 6) || (month == 9) || (month == 11) ) ) return false; 
 		else if ( ( month == 2 ) && (day > 29) ) return false;
 		else if ( ( month == 2 ) && (day == 29) && ( (year % 4) != 0) ) return false;
-		
+
 		else return true;
 	}
-	
 	/**
 	 * 
 	 * @param discontinued
@@ -152,9 +142,9 @@ public class Validator {
 	 */
 	private static String preciseCheck(String discontinued,String introduced) {		
 		String status = "OK";
-		
+
 		//date 1
-	    int year = Integer.parseInt(discontinued.substring(0,4));
+		int year = Integer.parseInt(discontinued.substring(0,4));
 		int month = Integer.parseInt(discontinued.substring(5,7));
 		int day = Integer.parseInt(discontinued.substring(8,10));
 		//date 2
@@ -168,10 +158,10 @@ public class Validator {
 		else if ( (day == 31) && ( (month == 2) || (month == 4) || (month == 6) || (month == 9) || (month == 11) ) ) status = "The discontinued entry is invalid";
 		else if ( ( month == 2 ) && (day > 29) ) status = "The discontinued entry is invalid";
 		else if ( ( month == 2 ) && (day == 29) && ( (year % 4) != 0) ) status = "The discontinued entry is invalid";
-	
+
 		//comparatively to introduced
 		else if ( (year < year2) || ((year == year2) && (month < month2)) || ((year == year2) && (month == month2) && (day < day2)) ) status = "The discontinued entry is paradoxical";
-		
+
 		return status;
 	}
 }

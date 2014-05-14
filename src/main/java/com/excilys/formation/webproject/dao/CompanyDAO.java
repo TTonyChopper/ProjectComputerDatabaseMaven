@@ -1,7 +1,5 @@
 package com.excilys.formation.webproject.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,29 +15,19 @@ public interface CompanyDAO{
 	/**
 	 * @return The Company in the table company matching the id
 	 */
-	public Company findById(Connection cn,Long id);
-	
+	public Company findById(Long id);
 	/**
 	 * @return The Company in the table company matching the name
 	 */
-	public Company findByName(Connection cn,String name);
-	
-	/**
-	 * 
-	 * @param rs The ResulSet from the query on the database computer-database-db
-	 * @return A List of Company
-	 */
-	public List extractFromResultSet(ResultSet rs) throws SQLException;
-	
+	public Company findByName(String name);
 	/**
 	 * 
 	 * @return A List<Company> of Company in the table company
 	 */
-	public List getList(Connection cn);
-
+	public List<Company> getList();
 	/**
 	 * 
 	 * @param comp A Company to be added in the table company
 	 */
-	public void insert(Connection cn,Company comp)throws SQLException;
+	public void create(Company comp)throws SQLException;
 }

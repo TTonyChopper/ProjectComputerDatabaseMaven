@@ -1,11 +1,7 @@
 package com.excilys.formation.webproject.dto;
 
-import java.io.Serializable;
-
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.Max;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -18,8 +14,8 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @author excilys
  *
  */
-public class ComputerDTO implements Serializable {
-	
+public class ComputerDTO {
+
 	/**
 	 * 
 	 * @author excilys
@@ -30,7 +26,7 @@ public class ComputerDTO implements Serializable {
 		private String introduced;
 		private String discontinued;
 		private String company;
-		
+
 		/**
 		 * 
 		 * @param name
@@ -67,7 +63,6 @@ public class ComputerDTO implements Serializable {
 			this.company = company;
 			return this;
 		}
-		
 		/**
 		 * 
 		 * @return the name of the company
@@ -75,16 +70,15 @@ public class ComputerDTO implements Serializable {
 		public String getName() {
 			return name;
 		}
-
 		/**
 		 * 
 		 * @return
 		 */
-	    public ComputerDTO build() {
-	        return new ComputerDTO(this);
-	    }
+		public ComputerDTO build() {
+			return new ComputerDTO(this);
+		}
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -92,20 +86,18 @@ public class ComputerDTO implements Serializable {
 	public static DTOBuilder builder() {
 		return new DTOBuilder();
 	}
-	 
 	public ComputerDTO(){
 	}
-	
 	/**
 	 * 
 	 * @param builder
 	 */
 	private ComputerDTO(DTOBuilder builder) {
-        this.name = builder.name; 
-        this.introduced = builder.introduced;
-        this.discontinued = builder.discontinued;
-        this.company = builder.company;
-    }	
+		this.name = builder.name; 
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.company = builder.company;
+	}	
 
 	//Attributs
 	@NotEmpty
@@ -177,14 +169,12 @@ public class ComputerDTO implements Serializable {
 	public void setCompany(String company) {
 		this.company = company;
 	}
-	
 	@Override
 	public String toString() {
 		return "ComputerDTO [name=" + name + ", introduced=" + introduced
 				+ ", discontinued=" + discontinued + ", company=" + company
 				+ "]";
 	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -197,7 +187,6 @@ public class ComputerDTO implements Serializable {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

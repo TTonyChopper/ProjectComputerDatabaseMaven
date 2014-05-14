@@ -37,23 +37,23 @@ public interface MainService {
 	 * @param pageWrapper
 	 * @return a List<Computer> of Computer in the table computer to be displayed
 	 */
-	public List getListComputerWithName(PageWrapper pageWrapper);
+	public List<Computer> getListComputerWithName(PageWrapper pageWrapper);
 	/**
 	 * 
 	 * @param comp A Computer to be put in the table computer to be displayed
 	 */
-	public void insertComputer(Computer comp);
+	public void createComputer(Computer comp);
 	/**
 	 * 
 	 * @param comp A Computer to be edited in the table computer
 	 * @param id The id of the edited Computer
 	 */
-	public void editComputer(Computer comp,Long id);
+	public void saveComputer(Computer comp,Long id);
 	/**
 	 * 
 	 * @param id The id of the Computer to be removed in the table computer
 	 */
-	public void removeComputer(Long id);
+	public void deleteComputer(Long id);
 	/**
 	 * @return the Company in the table company matching the id
 	 */
@@ -62,10 +62,10 @@ public interface MainService {
 	 * 
 	 * @return a List<Company> of every Company in the table company
 	 */
-	public List getListCompany();
+	public List<Company> getListCompany();
 	/**
 	 * 
 	 * @param comp A Computer to be put in the table company
 	 */
-	public void insertCompany(Company comp);
+	public void createCompany(Company comp);
 }

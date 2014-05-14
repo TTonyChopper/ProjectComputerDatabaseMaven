@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.webproject.dao.ComputerDAO;
-import com.excilys.formation.webproject.db.impl.ConnectionFactoryImpl;
+import com.excilys.formation.webproject.db.ConnectionFactory;
 import com.excilys.formation.webproject.om.Company;
 import com.excilys.formation.webproject.om.Computer;
 import com.excilys.formation.webproject.om.Computer.CpuBuilder;
@@ -31,18 +32,18 @@ import com.excilys.formation.webproject.common.PageWrapper;
  */
 @Repository
 public class ComputerDAOImpl implements ComputerDAO{
-	
+
 	@Autowired
-	private ConnectionFactoryImpl cnFactory;
-	
+	private ConnectionFactory cnFactory;
+
 	/**
 	 * 
 	 * @param rs The ResulSet from the query on the database Root
 	 * @return A List of Computer
 	 */
-	public List extractFromResultSet(ResultSet rs) throws SQLException{
-		ArrayList<Computer> liste  = new ArrayList<>();
-		
+	private List<Computer> extractFromResultSet(ResultSet rs) throws SQLException{
+		List<Computer> liste  = new ArrayList<>();
+
 		while ((rs != null)&&rs.next()) {
 			CpuBuilder b = Computer.builder().id(new Long(rs.getLong(1))).name(rs.getString(2));
 			try {
@@ -63,29 +64,31 @@ public class ComputerDAOImpl implements ComputerDAO{
 	/**
 	 * @return The Computer in the table computer matching the id
 	 */
-	public Computer find(Connection cn,Long id) {
-		ArrayList<Computer> liste  = new ArrayList<>();
+	@Override
+	public Computer find(Long id) {
+		List<Computer> liste  = new ArrayList<>();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Computer computer = null;
+		Connection cn = null;
 
 		try {
 			cn = cnFactory.getConnection();
-			stmt = cn.prepareStatement("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
-					  				  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.id = ?;");
+			stmt = cn.prepareStatement("SELECT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu"
+					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.id = ?");
 			stmt.setString(1,String.valueOf(id));	
-			
+
 			rs = stmt.executeQuery();
-			
+
 			liste = (ArrayList<Computer>) extractFromResultSet(rs);
-			
+
 			if (liste.size() == 0) computer = null;
 			else computer = liste.get(0);
-			
+
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return computer;
 	}
@@ -93,26 +96,28 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * 
 	 * @return
 	 */
-	public Integer getListSize(Connection cn) {
+	@Override
+	public Integer getListSize() {
 
 		Integer computerListSize = null;
 		ResultSet rs = null ;
-		Statement stmt = null;	
+		Statement stmt = null;
+		Connection cn = null;
 
 		try {
 
 			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT COUNT(*) as computerlistsize FROM computer");
-			
+
 			while(rs.next()){
-			computerListSize = rs.getInt("computerListSize"); 
+				computerListSize = rs.getInt("computerListSize"); 
 			}
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return computerListSize;
 	}
@@ -120,25 +125,27 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * 
 	 * @return A List<Computer> of Computer in the table computer
 	 */
-	public List getList(Connection cn) {
+	@Override
+	public List<Computer> getList() {
 
-		ArrayList<Computer> liste  = new ArrayList<>();
+		List<Computer> liste  = new ArrayList<>();
 		ResultSet rs = null ;
 		Statement stmt = null;
-
+		Connection cn = null;
+		
 		try {
 
 			cn = cnFactory.getConnection();
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
-								  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id;");
-			
+					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id");
+
 			liste = (ArrayList<Computer>) extractFromResultSet(rs);
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return liste;
 	}
@@ -146,30 +153,32 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * 
 	 * @param pagewrapper
 	 */
-	public void getList(Connection cn,PageWrapper pageWrapper) {
+	@Override
+	public void getList(PageWrapper pageWrapper) {
 
-		ArrayList<Computer> liste  = new ArrayList<>(25);
+		List<Computer> liste  = new ArrayList<>();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
+		Connection cn = null;
 
 		try {
 
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
-								  	  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?;");
-			
-			stmt.setString(1,String.valueOf(25*(pageWrapper.getPageNumber()-1)));
-			stmt.setString(2,String.valueOf(pageWrapper.getPerPage()));
-			
+					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?");
+
+			stmt.setLong(1,pageWrapper.getPerPage()*(pageWrapper.getPageNumber()-1));
+			stmt.setLong(2,pageWrapper.getPerPage());
+
 			rs = stmt.executeQuery();
-			
+
 			liste = (ArrayList<Computer>) extractFromResultSet(rs);
 			pageWrapper.setComputerList(liste);
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 	}
 	/**
@@ -177,28 +186,30 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param pageWrapper
 	 * @return
 	 */
-	public Integer getListSizeWithName(Connection cn,PageWrapper pageWrapper) {	
+	@Override
+	public Integer getListSizeWithName(PageWrapper pageWrapper) {	
 
 		Integer computerListSize = null;
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
+		Connection cn = null;
 
 		try {
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT COUNT(*) AS computerListSize, cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu " 
-									  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ? ");
+					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ?");
 			stmt.setString(1,"%"+pageWrapper.getNameFilter()+"%");
 			stmt.setString(2,"%"+pageWrapper.getNameFilter()+"%");
 			rs = stmt.executeQuery();		
 
 			while(rs.next()){
-			computerListSize = rs.getInt("computerListSize"); 
+				computerListSize = rs.getInt("computerListSize"); 
 			}
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return computerListSize;	
 	}
@@ -206,31 +217,34 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * 
 	 * @return A List<Computer> of Computer in the table computer containing namefilter
 	 */
-	public List getListWithName(Connection cn,PageWrapper pageWrapper) {	
+	@Override
+	public List<Computer> getListWithName(PageWrapper pageWrapper) {	
 
-		ArrayList<Computer> liste  = new ArrayList<>();
+		List<Computer> liste  = new ArrayList<>();
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
+		Connection cn = null;
 
 		try {
 			cn = cnFactory.getConnection();
 			stmt = cn.prepareStatement("SELECT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu " 
-									  +"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ? "
-									  +"ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?;");
+					+"LEFT OUTER JOIN company AS cpy ON cpu.company_id = cpy.id WHERE cpu.name LIKE ? OR cpy.name LIKE ? "
+					+"ORDER BY "+pageWrapper.getFieldOrder()+" "+pageWrapper.getOrder()+", cpu.name ASC LIMIT ?,?");
+			
 			stmt.setString(1,"%"+pageWrapper.getNameFilter()+"%");
 			stmt.setString(2,"%"+pageWrapper.getNameFilter()+"%");
-			stmt.setString(3,String.valueOf(25*(pageWrapper.getPageNumber()-1)));
-			stmt.setString(4,String.valueOf(pageWrapper.getPerPage()));
+			stmt.setLong(3,pageWrapper.getPerPage()*(pageWrapper.getPageNumber()-1));
+			stmt.setLong(4,pageWrapper.getPerPage());
 
 			rs = stmt.executeQuery();		
-			
+
 			liste = (ArrayList<Computer>) extractFromResultSet(rs);		
 			pageWrapper.setComputerList(liste);
 
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.disconnect(stmt,rs);
+			cnFactory.disconnect(stmt,rs,cn);
 		}
 		return liste;	
 	}
@@ -240,26 +254,21 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param comp
 	 * @throws SQLException
 	 */
-	public void insert(Connection cn,Computer comp) throws SQLException{
+	@Override
+	public void create(Computer comp) throws SQLException{
 
-		PreparedStatement stmt = null;
+		Connection cn = cnFactory.getConnection();
+		Long companyid = comp.getCompany().getId();
+		PreparedStatement stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)"); 
 
-		cn = cnFactory.getConnection();
-		String companyname = comp.getCompany().getName();
-		if (comp.getCompany().getName()==null) stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued) VALUES (?,?,?);");
-		else stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?);"); 
-			
 		stmt.setString(1,comp.getName());
-		stmt.setString(2,String.valueOf(comp.getIntroduced()));
-		if (companyname != null) {
-		stmt.setString(3,String.valueOf(comp.getDiscontinued()));
-		stmt.setString(4,String.valueOf(comp.getCompany().getId()));
-		} else stmt.setString(3,String.valueOf(comp.getDiscontinued()));
-			
-		System.out.println(stmt.toString());
-		stmt.executeUpdate();
+		stmt.setTimestamp(2,comp.getIntroduced());
+		stmt.setTimestamp(3,comp.getDiscontinued());
+		if (companyid == null) stmt.setNull(4,Types.NULL);
+		else stmt.setLong(4,companyid);
 
-		cnFactory.closeStatement(stmt);	
+		stmt.executeUpdate();
+		cnFactory.disconnect(stmt,cn);	
 	}
 	/**
 	 * 
@@ -268,24 +277,22 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void edit(Connection cn,Computer comp,Long id) throws SQLException{
+	@Override
+	public void save(Computer comp,Long id) throws SQLException{
 
-		PreparedStatement stmt = null;
-			
+		Connection cn = cnFactory.getConnection();
 		Long companyid = comp.getCompany().getId();
-		if (comp.getCompany().getId()==null) stmt = cn.prepareStatement("UPDATE computer SET name=?, introduced=?, discontinued=? WHERE id = ?");
-		else stmt = cn.prepareStatement("UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id = ?");
-			
+		PreparedStatement stmt = cn.prepareStatement("UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id = ?");
+
 		stmt.setString(1,comp.getName());
-		stmt.setString(2,String.valueOf(comp.getIntroduced()));
-		stmt.setString(3,String.valueOf(comp.getDiscontinued()));
-		if (companyid != null) {
-			stmt.setString(4,String.valueOf(companyid));
-			stmt.setString(5,String.valueOf(id));
-		}else stmt.setString(4,String.valueOf(id));
-						
+		stmt.setTimestamp(2,comp.getIntroduced());
+		stmt.setTimestamp(3,comp.getDiscontinued());
+		if (companyid == null) stmt.setNull(4,Types.NULL);
+		else stmt.setLong(4,companyid);
+		stmt.setLong(5,id);
+
 		stmt.executeUpdate();
-		cnFactory.closeStatement(stmt);
+		cnFactory.disconnect(stmt,cn);
 	}
 	/**
 	 * 
@@ -293,17 +300,15 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void remove(Connection cn,Long id) throws SQLException{
+	@Override
+	public void delete(Long id) throws SQLException{
 
-		PreparedStatement stmt = null;
+		Connection cn = cnFactory.getConnection();	
+		PreparedStatement stmt = cn.prepareStatement("DELETE FROM computer WHERE id = ?");
+		
+		stmt.setLong(1,id);
 
-		cn = cnFactory.getConnection();
-		stmt = cn.prepareStatement("DELETE FROM computer WHERE id = ?;");
-
-		stmt.setString(1,String.valueOf(id));
-			
 		stmt.executeUpdate();
-
-		cnFactory.closeStatement(stmt);
+		cnFactory.disconnect(stmt,cn);
 	}
 }

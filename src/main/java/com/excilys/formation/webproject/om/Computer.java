@@ -1,10 +1,6 @@
 package com.excilys.formation.webproject.om;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * 	id - The Long id of the computer in the database
@@ -22,18 +18,16 @@ import org.springframework.stereotype.Component;
  * @author excilys
  *
  */
-@Component
-@Scope("Prototype")
-public class Computer implements Serializable {
-	
-/*****************************Builder*****************************/
+public class Computer{
+
+	/*****************************Builder*****************************/
 	public static class CpuBuilder {
 		private Long id;
 		private String	name;
 		private Timestamp introduced;
 		private Timestamp discontinued;
 		private Company company;
-		
+
 		/**
 		 * 
 		 * @param id
@@ -79,7 +73,6 @@ public class Computer implements Serializable {
 			this.company = company;
 			return this;
 		}
-		
 		/**
 		 * 
 		 * @return the name of the company
@@ -87,17 +80,16 @@ public class Computer implements Serializable {
 		public String getName() {
 			return name;
 		}
-		
 		/**
 		 * 
 		 * @return
 		 */
-	    public Computer build() {
-	        return new Computer(this);
-	    }
+		public Computer build() {
+			return new Computer(this);
+		}
 	}
-/*****************************Builder*****************************/	
-	
+	/*****************************Builder*****************************/	
+
 	/**
 	 * 
 	 * @return
@@ -105,18 +97,17 @@ public class Computer implements Serializable {
 	public static CpuBuilder builder() {
 		return new CpuBuilder();
 	}
-	
 	/**
 	 * 
 	 * @param builder
 	 */
 	private Computer(CpuBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name; 
-        this.introduced = builder.introduced;
-        this.discontinued = builder.discontinued;
-        this.company = builder.company;
-    }	
+		this.id = builder.id;
+		this.name = builder.name; 
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.company = builder.company;
+	}	
 
 	//Attributs
 	private Long id;
