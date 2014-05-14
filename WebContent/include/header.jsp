@@ -16,4 +16,7 @@
 		<h1 class="fill">
 			<a href="index.jsp"> <spring:message code="header.name"/> </a>
 		</h1>
+		
+		<a href="dashboard?lang=en"> <spring:message code="en"/> </a>
+		<a href="dashboard?lang=fr"> <spring:message code="fr"/> </a>
 	</header>

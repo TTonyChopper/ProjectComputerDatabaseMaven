@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <jsp:include page="../../include/header.jsp" />
 
@@ -26,7 +27,7 @@
 			);								
 			
 			jQuery.validator.addMethod("dateComparison", function (value,element) {
-				if ( ($.trim(value).length > 0) && ($.trim($('#introducedDate').val()).length > 0) ) { return Date.parse($('#introducedDate').val()) <= Date.parse(value); }
+				if ( ($.trim(value).length > 0) && ($.trim($('#introduced').val()).length > 0) ) { return Date.parse($('#introduced').val()) <= Date.parse(value); }
 				else {return true;}
 				},"Dates Impossibles"
 			);
@@ -38,11 +39,11 @@
 	            required: true,
 	            maxlength: 255
 	        },
-	    	"introducedDate":{
+	    	"introduced":{
 	    		maxlength: 255,
 	    		dateValid: true
         	},
-	    	"discontinuedDate":{
+	    	"discontinued":{
 	    		maxlength: 255,
 	    		dateValid: true,
 	    		dateComparison: true
@@ -60,13 +61,13 @@
 
 	<h1><spring:message code="editComp"/></h1>
 	
-	<form id="form" action="editComputer" method="POST">
+	<form:form id="form" action="editComputer" method="POST" commandName="computerDTO">
 		<fieldset>
 			<div class="clearfix">
 				<label for="name"><spring:message code="name"/></label>
 				<div class="input">
-					<input type="text" name="name" value="${ecomputer.name}"/>
-					<span class="help-inline">Required</span>
+					<form:input type="text" name="name" value="${ecomputer.name}" path="name"/>
+					<span class="help-inline"><spring:message code="required"/></span>
 					<input readonly size="${errorlist.get(0).length()}" type="text" value="${errorlist.get(0)}"/>
 				</div>
 			</div>
@@ -74,28 +75,29 @@
 			<div class="clearfix">
 				<label for="introduced"><spring:message code="introduced"/></label>
 				<div class="input">
-					<input id="introducedDate" type="text" name="introducedDate" value="${ecomputer.introduced}" />
-					<span class="help-inline">YYYY-MM-DD</span>
+					<form:input id="introduced" type="date" name="introduced" path="introduced" value="${ecomputer.introduced}" />
+					<span class="help-inline"><spring:message code="pattern"/></span>
 					<input readonly size="${errorlist.get(1).length()}" type="text" value="${errorlist.get(1)}"/>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued"><spring:message code="discontinued"/></label>
 				<div class="input">
-					<input type="text" name="discontinuedDate" value="${ecomputer.discontinued}"/>
-					<span class="help-inline">YYYY-MM-DD</span>
+					<form:input id="discontinued" type="date" name="discontinued" path="discontinued" value="${ecomputer.discontinued}"/>
+					<span class="help-inline"><spring:message code="pattern"/></span>
 					<input readonly size="${errorlist.get(2).length()}" type="text" value="${errorlist.get(2)}"/>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="company"><spring:message code="company"/></label>
 				<div class="input">
-					<select name="company">
+					<form:select name="company" path="company">
 							<option selected value="${ecomputer.company.id}">${ecomputer.company.name}</option>
 						<c:forEach items="${companylist}" var="company">
 							<option value="${company.id}">${company.name}</option>
 						</c:forEach>
-					</select>
+					</form:select>
+					<span class="help-inline"><spring:message code="choose"/></span>
 					<input readonly size="${errorlist.get(3).length()}" type="text" value="${errorlist.get(3)}"/>
 				</div>
 			</div>
@@ -106,7 +108,7 @@
 			<input type="submit" value="<spring:message code="confirm"/>" class="btn btn-success">			
 			<spring:message code="or"/> <a href="dashboard" class="btn btn-danger"><spring:message code="cancel"/></a>
 		</div>
-	</form>
+	</form:form>
 </section>
 
 <jsp:include page="../../include/footer.jsp" />

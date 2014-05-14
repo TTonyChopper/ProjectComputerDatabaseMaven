@@ -34,13 +34,9 @@ public class CreateController {
 
 	@Autowired
 	private Mapper mapper;
-
+	
 	/**
 	 * 
-	 * @param name
-	 * @param introduced
-	 * @param discontinued
-	 * @param company
 	 * @param model
 	 * @return
 	 */
@@ -55,10 +51,8 @@ public class CreateController {
 	}
 	/**
 	 * 
-	 * @param name
-	 * @param introduced
-	 * @param discontinued
-	 * @param companyidS
+	 * @param computerDTO
+	 * @param result
 	 * @param model
 	 * @return
 	 */

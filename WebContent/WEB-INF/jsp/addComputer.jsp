@@ -27,7 +27,7 @@
 			);								
 			
 			jQuery.validator.addMethod("dateComparison", function (value,element) {
-				if ( ($.trim(value).length > 0) && ($.trim($('#introducedDate').val()).length > 0) ) { return Date.parse($('#introducedDate').val()) < Date.parse(value); }
+				if ( ($.trim(value).length > 0) && ($.trim($('#introduced').val()).length > 0) ) { return Date.parse($('#introduced').val()) < Date.parse(value); }
 				else {return true;}
 				},"Dates Impossibles"
 			);
@@ -39,11 +39,11 @@
 	            required: true,
 	            maxlength: 255
 	        },
-	    	"introducedDate":{
+	    	"introduced":{
 	    		maxlength: 255,
 	    		dateValid: true
         	},
-	    	"discontinuedDate":{
+	    	"discontinued":{
 	    		maxlength: 255,
 	    		dateValid: true,
 	    		dateComparison: true
@@ -76,7 +76,7 @@
 			<div class="clearfix">
 				<label for="introduced"><spring:message code="introduced"/></label>
 				<div class="input">
-					<form:input type="date" name="introducedDate" path="introduced" />
+					<form:input id ="introduced" type="date" name="introduced" path="introduced" />
 					<font color="red"> <form:errors path="introduced"></form:errors></font>
 					<span class="help-inline"><spring:message code="pattern"/></span>
 					<input size="${errorlist.get(1).length()}" readonly type="text" value="${ errorlist.get(1) }"/>				
@@ -85,7 +85,7 @@
 			<div class="clearfix">
 				<label for="discontinued"><spring:message code="discontinued"/></label>
 				<div class="input">
-					<form:input type="date" name="discontinuedDate" path="discontinued"/>
+					<form:input id ="discontinued" type="date" name="discontinued" path="discontinued"/>
 					<font color="red"> <form:errors path="discontinued"></form:errors></font>
 					<span class="help-inline"><spring:message code="pattern"/></span>
 					<input size="${errorlist.get(2).length()}" readonly type="text" value="${ errorlist.get(2) }"/>			

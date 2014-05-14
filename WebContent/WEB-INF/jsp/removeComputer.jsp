@@ -3,44 +3,44 @@
 <jsp:include page="../../include/header.jsp" />
 <section id="main">
 
-	<h1>Remove Computer</h1>
+	<h1><spring:message code="name"/></h1>
 	
 	<form action="removeComputer" method="POST">
 		<fieldset>
 			<div class="clearfix">
-				<label for="name">Computer name:</label>
+				<label for="name"><spring:message code="name"/></label>
 				<div class="input">
 					<input readonly type="text" name="name" value="${rcomputer.name}" />
-					<span class="help-inline">Required</span>
+					<span class="help-inline"><spring:message code="required"/></span>
 				</div>
 			</div>
 	
 			<div class="clearfix">
-				<label for="introduced">Introduced date:</label>
+				<label for="introduced"><spring:message code="introduced"/></label>
 				<div class="input">
-					<input readonly type="date" name="introducedDate" value="${rcomputer.introduced}" />
-					<span class="help-inline">YYYY-MM-DD</span>
+					<input readonly type="date" name="introduced" value="${rcomputer.introduced}" />
+					<span class="help-inline"><spring:message code="pattern"/></span>
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="discontinued">Discontinued date:</label>
+				<label for="discontinued"><spring:message code="discontinued"/></label>
 				<div class="input">
-					<input readonly type="date" name="discontinuedDate" value="${rcomputer.discontinued}" />
-					<span class="help-inline">YYYY-MM-DD</span>
+					<input readonly type="date" name="discontinued" value="${rcomputer.discontinued}" />
+					<span class="help-inline"><spring:message code="pattern"/></span>
 				</div>
 			</div>
 			<div class="clearfix">
-				<label for="company">Company Name:</label>
+				<label for="company"><spring:message code="company"/></label>
 				<div class="input">
-					<input readonly type="date" name="discontinuedDate" value="${rcomputer.company.name}" />
+					<input readonly type="text" name="company" value="${rcomputer.company.name}" />
 				</div>
 			</div>
 		</fieldset>
 		
 		<div class="actions">
 			<input type="hidden" name="rid" value="${rcomputer.id}">
-			<input type="submit" value="delete" class="btn btn-success">			
-			or <a href="dashboard" class="btn btn-danger">Cancel</a>
+			<input type="submit" value="<spring:message code="confirm"/>" class="btn btn-success">			
+			<spring:message code="or"/> <a href="dashboard" class="btn btn-danger"><spring:message code="cancel"/></a>
 		</div>
 	</form>
 </section>
