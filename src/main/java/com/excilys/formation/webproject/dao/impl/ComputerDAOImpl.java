@@ -5,10 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -46,12 +50,18 @@ public class ComputerDAOImpl implements ComputerDAO{
 		while ((rs != null)&&rs.next()) {
 			CpuBuilder b = Computer.builder().id(new Long(rs.getLong(1))).name(rs.getString(2));
 			try {
-				b.introduced(rs.getTimestamp(3));
+				DateTime introducedTotal = new DateTime(rs.getTimestamp(3));
+				DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+				String strDateOnly = fmt.print(introducedTotal);
+				b.introduced(new DateTime(strDateOnly));
 			}catch (java.sql.SQLException e) {
 				//System.out.println("Timestamp introduced Null on " + b.getName());
 			}
 			try {
-				b.discontinued(rs.getTimestamp(4));
+				DateTime discontinuedTotal = new DateTime(rs.getTimestamp(4));
+				DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+				String strDateOnly = fmt.print(discontinuedTotal);
+				b.discontinued(new DateTime(strDateOnly));
 			}catch (java.sql.SQLException e) {
 				//System.out.println("Timestamp discontinued Null on " + b.getName());
 			}		
@@ -267,8 +277,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		PreparedStatement stmt = cn.prepareStatement("INSERT into computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)"); 
 
 		stmt.setString(1,comp.getName());
-		stmt.setTimestamp(2,comp.getIntroduced());
-		stmt.setTimestamp(3,comp.getDiscontinued());
+		stmt.setTimestamp(2,new Timestamp(comp.getIntroduced().getMillis()));
+		stmt.setTimestamp(3,new Timestamp(comp.getDiscontinued().getMillis()));
 		if (companyid == null) stmt.setNull(4,Types.NULL);
 		else stmt.setLong(4,companyid);
 
@@ -290,8 +300,8 @@ public class ComputerDAOImpl implements ComputerDAO{
 		PreparedStatement stmt = cn.prepareStatement("UPDATE computer SET name=?, introduced=?, discontinued=?, company_id=? WHERE id = ?");
 
 		stmt.setString(1,comp.getName());
-		stmt.setTimestamp(2,comp.getIntroduced());
-		stmt.setTimestamp(3,comp.getDiscontinued());
+		stmt.setTimestamp(2,new Timestamp(comp.getIntroduced().getMillis()));
+		stmt.setTimestamp(3,new Timestamp(comp.getDiscontinued().getMillis()));
 		if (companyid == null) stmt.setNull(4,Types.NULL);
 		else stmt.setLong(4,companyid);
 		stmt.setLong(5,id);

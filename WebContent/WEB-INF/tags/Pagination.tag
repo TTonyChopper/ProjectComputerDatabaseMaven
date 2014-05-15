@@ -1,8 +1,10 @@
 <%@ tag body-content="empty" %> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ attribute type="com.excilys.formation.webproject.common.PageWrapper" name="pageWrapper" %>
 
+<c:set var="lPattern"> <spring:message code="langPattern"/> </c:set>
 
 	<table class ="table table-bordered">
 			<thead>
@@ -43,8 +45,12 @@
 			<c:forEach items="${pageWrapper.computerList}" var="cpu">
 				<tr>
 					<td><a href="#">${cpu.name}</a></td>
-					<td>${cpu.introduced}</td>
-					<td>${cpu.discontinued}</td>
+					<td>
+						<joda:format value="${cpu.introduced}" pattern="${lPattern}" />				
+					</td>
+					<td>
+						<joda:format value="${cpu.discontinued}" pattern="${lPattern}" />
+					</td>
 					<td>${cpu.company.name}</td>
 					<td> <form action="editComputer" method="GET">
 						 <input type="submit" class="btn btn-warning" name="sbutton" value="<spring:message code="pagination.editComp"/>" >

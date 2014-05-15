@@ -1,6 +1,6 @@
 package com.excilys.formation.webproject.om;
 
-import java.sql.Timestamp;
+import org.joda.time.DateTime;
 
 /**
  * 	id - The Long id of the computer in the database
@@ -24,8 +24,8 @@ public class Computer{
 	public static class CpuBuilder {
 		private Long id;
 		private String	name;
-		private Timestamp introduced;
-		private Timestamp discontinued;
+		private DateTime introduced;
+		private DateTime discontinued;
 		private Company company;
 
 		/**
@@ -51,7 +51,7 @@ public class Computer{
 		 * @param introduced
 		 * @return
 		 */
-		public CpuBuilder introduced(Timestamp introduced) {
+		public CpuBuilder introduced(DateTime introduced) {
 			this.introduced = introduced;
 			return this;
 		}
@@ -60,7 +60,7 @@ public class Computer{
 		 * @param discontinued
 		 * @return
 		 */
-		public CpuBuilder discontinued(Timestamp discontinued) {
+		public CpuBuilder discontinued(DateTime discontinued) {
 			this.discontinued = discontinued;
 			return this;
 		}
@@ -112,8 +112,8 @@ public class Computer{
 	//Attributs
 	private Long id;
 	private String	name;
-	private Timestamp introduced;
-	private Timestamp discontinued;
+	private DateTime introduced;
+	private DateTime discontinued;
 	private Company company;
 
 	//Accesseurs
@@ -149,28 +149,28 @@ public class Computer{
 	 * 
 	 * @return the Timestamp introduced
 	 */
-	public Timestamp getIntroduced() {
+	public DateTime getIntroduced() {
 		return introduced;
 	}
 	/**
 	 * 
 	 * @param introduced The Timestamp introduced
 	 */
-	public void setIntroduced(Timestamp introduced) {
+	public void setIntroduced(DateTime introduced) {
 		this.introduced = introduced;
 	}
 	/**
 	 * 
 	 * @return the Timestamp discontinued
 	 */
-	public Timestamp getDiscontinued() {
+	public DateTime getDiscontinued() {
 		return discontinued;
 	}
 	/**
 	 * 
 	 * @param discontinued The Timestamp of discontinued
 	 */
-	public void setDiscontinued(Timestamp discontinued) {
+	public void setDiscontinued(DateTime discontinued) {
 		this.discontinued = discontinued;
 	}
 	/**

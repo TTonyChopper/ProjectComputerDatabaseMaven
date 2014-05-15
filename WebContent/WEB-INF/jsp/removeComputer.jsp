@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags"%>
 <jsp:include page="../../include/header.jsp" />
 <section id="main">
 
@@ -18,14 +19,16 @@
 			<div class="clearfix">
 				<label for="introduced"><spring:message code="introduced"/></label>
 				<div class="input">
-					<input readonly type="date" name="introduced" value="${rcomputer.introduced}" />
+				<joda:format value="${rcomputer.introduced}" pattern="yyyy-MM-dd" var="introducedFormatted" />
+					<input readonly type="date" name="introduced" value="${introducedFormatted}" />
 					<span class="help-inline"><spring:message code="pattern"/></span>
 				</div>
 			</div>
 			<div class="clearfix">
 				<label for="discontinued"><spring:message code="discontinued"/></label>
 				<div class="input">
-					<input readonly type="date" name="discontinued" value="${rcomputer.discontinued}" />
+					<joda:format value="${rcomputer.discontinued}" pattern="yyyy-MM-dd" var="discontinuedFormatted" />
+					<input readonly type="date" name="discontinued" value="${discontinuedFormatted}" />
 					<span class="help-inline"><spring:message code="pattern"/></span>
 				</div>
 			</div>

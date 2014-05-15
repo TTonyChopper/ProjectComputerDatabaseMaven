@@ -1,10 +1,10 @@
 package com.excilys.formation.webproject.dto;
 
 import java.sql.Timestamp;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,45 +17,39 @@ public class Mapper {
 
 	@Autowired
 	private MainServiceImpl mainService;
-
+	
 	/**
 	 * 
 	 * @param computerDTO
 	 * @return
 	 */
 	public Computer fromDTO(ComputerDTO computerDTO) {
-
+		
 		if (computerDTO.getIntroduced()==null) computerDTO.setIntroduced("");
 		if (computerDTO.getDiscontinued()==null) computerDTO.setDiscontinued("");
 		if (computerDTO.getCompany()==null) computerDTO.setCompany("");
 
 		String	name = computerDTO.getName();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		ParsePosition parseposition = new ParsePosition(0);
-		Date introduceddate = null;
-		Date discontinueddate = null;
-		Timestamp introduced = null;
-		Timestamp discontinued = null;
-		if (computerDTO.getIntroduced() != null) {
+		DateTimeFormatter  dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateTime introduced = null;
+		DateTime discontinued = null;
+		if (!computerDTO.getIntroduced().isEmpty()) {
 			try {
-				introduceddate = formatter.parse(computerDTO.getIntroduced(),parseposition);
-				introduced = new Timestamp(introduceddate.getTime());
+				introduced = dtf.parseDateTime(computerDTO.getIntroduced());
 			} catch(NullPointerException e) {
-				introduced = new Timestamp(0);
+				introduced = new DateTime(new Timestamp(0));
 			}					
 		}else {
-			introduced = new Timestamp(0);
-		}
-		parseposition.setIndex(0);	
+			introduced = new DateTime(new Timestamp(0));
+		}	
 		if (computerDTO.getDiscontinued() != null) {
 			try {
-				discontinueddate = formatter.parse(computerDTO.getDiscontinued(),parseposition);
-				discontinued = new Timestamp(discontinueddate.getTime());
+				discontinued = dtf.parseDateTime(computerDTO.getDiscontinued());
 			} catch(NullPointerException e) {
-				discontinued = new Timestamp(0);
+				discontinued = new DateTime(new Timestamp(0));
 			}
 		}else {
-			discontinued = new Timestamp(0);	
+			discontinued = new DateTime(new Timestamp(0));	
 		}	
 
 		Company company = mainService.findCompanyById(computerDTO.getCompany()); 
