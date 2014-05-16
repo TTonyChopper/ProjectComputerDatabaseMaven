@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.webproject.dao.CompanyDAO;
 import com.excilys.formation.webproject.dao.ComputerDAO;
@@ -22,7 +24,6 @@ import com.excilys.formation.webproject.common.PageWrapper;
  * @author excilys
  *
  */
-//@Transactional
 @Service
 public class MainServiceImpl implements MainService{
 
@@ -51,11 +52,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public Computer findComputer(Long id) {
 		Computer comp = cpuDAO.find(id);
-		try {
-			tManager.getDataSource().getConnection().close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			try {
+				DataSourceUtils.getConnection(tManager.getDataSource()).close();
+			} catch (SQLException e) {
+				throw new IllegalStateException("Could not close connection");
+			}
 		return comp;
 	}
 	/**
@@ -66,9 +67,9 @@ public class MainServiceImpl implements MainService{
 	public Integer getListComputerSize() {
 		Integer size = cpuDAO.getListSize();
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Could not close connection");
 		}
 		return size;	
 	}
@@ -80,7 +81,7 @@ public class MainServiceImpl implements MainService{
 	public void getListComputer(PageWrapper pageWrapper) {
 		cpuDAO.getList(pageWrapper);
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
@@ -94,9 +95,9 @@ public class MainServiceImpl implements MainService{
 	public Integer getListComputerSizeWithName(PageWrapper pageWrapper) {
 		Integer size = cpuDAO.getListSizeWithName(pageWrapper);
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Could not close connection");
 		}
 		return size;
 	}
@@ -109,9 +110,9 @@ public class MainServiceImpl implements MainService{
 	public List<Computer> getListComputerWithName(PageWrapper pageWrapper) {
 		List<Computer> liste = cpuDAO.getListWithName(pageWrapper);
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Could not close connection");
 		}
 		return liste;
 	}
@@ -119,107 +120,74 @@ public class MainServiceImpl implements MainService{
 	 * 
 	 * @param comp A Computer to be put in the table computer to be displayed
 	 */
+	@Transactional
 	@Override
 	public void createComputer(Computer comp) {
 	
 		Connection cn=null;
-		try {
-			cn = tManager.getDataSource().getConnection();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		cn = DataSourceUtils.getConnection(tManager.getDataSource());
 
 		//Transaction
 		try {
-			cn.setAutoCommit(false);
 			cpuDAO.create(comp);
-			cn.commit();
-		} catch (SQLException e) {
-			try {
-				cn.rollback();
-			} catch (SQLException e2) {
-				throw new IllegalStateException("Could not roll back on creation");
-			}
-		} finally {
+			
+		}catch(SQLException e){
+			throw new RuntimeException("rollback on creation");
+		}
 			endTransaction(cn," on creation");
-			try {
-				tManager.getDataSource().getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		try {
+				cn.close();
+		} catch (SQLException e) {
+			throw new IllegalStateException("Could not close connection");
 		}	
+		throw new RuntimeException("rollback on creation");
 	}	
 	/**
 	 * 
 	 * @param comp A Computer to be edited in the table computer
 	 * @param id The id of the edited Computer
 	 */
+	@Transactional
 	@Override
 	public void saveComputer(Computer comp, Long id) {
 
-		Connection cn=null;
-		try {
-			cn = tManager.getDataSource().getConnection();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Connection cn = DataSourceUtils.getConnection(tManager.getDataSource());
 
 		//Transaction
 		try {
-			cn.setAutoCommit(false);
 			cpuDAO.save(comp,id);
-			cn.commit();
-		} catch (SQLException e) {
-			try {
-				cn.rollback();
-			} catch (SQLException e2) {
-				throw new IllegalStateException("Could not roll back on save");
-			}
-		} finally {
+		}catch(SQLException e){
+			throw new RuntimeException("rollback on save");
+		}
 			endTransaction(cn," on save");
-			try {
-				tManager.getDataSource().getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}	
+		try {
+				cn.close();
+		} catch (SQLException e) {
+			throw new IllegalStateException("Could not close connection");
+		}
 	}
 	/**
 	 * 
 	 * @param id The id of the Computer to be removed in the table computer
 	 */
+	@Transactional
 	@Override
 	public void deleteComputer(Long id) {
 
-		Connection cn=null;
-		try {
-			cn = tManager.getDataSource().getConnection();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Connection cn = DataSourceUtils.getConnection(tManager.getDataSource());
 
 		//Transaction
 		try {
-			cn.setAutoCommit(false);
 			cpuDAO.delete(id);
-			cn.commit();
-		} catch (SQLException e) {
-			try {
-				cn.rollback();
-			} catch (SQLException e2) {
-				throw new IllegalStateException("Could not roll back on deletion");
-			}
-		} finally {
+		}catch(SQLException e){
+			throw new RuntimeException("rollback on deletion");
+		}
 			endTransaction(cn," on deletion");
-			try {
-				tManager.getDataSource().getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}	
+		try {
+				cn.close();
+		} catch (SQLException e) {
+			throw new IllegalStateException("Could not close connection");
+		}
 	}
 	/**
 	 * @return the Company in the table company matching the id
@@ -231,9 +199,9 @@ public class MainServiceImpl implements MainService{
 		if (idL > 0) comp = cpyDAO.findById(idL);
 
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Could not close connection");
 		}
 		return comp; 
 	}
@@ -245,9 +213,9 @@ public class MainServiceImpl implements MainService{
 	public List<Company> getListCompany() {
 		ArrayList<Company> list  = (ArrayList<Company>) cpyDAO.getList();
 		try {
-			tManager.getDataSource().getConnection().close();
+			DataSourceUtils.getConnection(tManager.getDataSource()).close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Could not close connection");
 		}
 		return list; 
 	}
@@ -255,35 +223,23 @@ public class MainServiceImpl implements MainService{
 	 * 
 	 * @param comp A Computer to be put in the table company
 	 */
+	@Transactional
 	@Override
 	public void createCompany(Company comp) {
 
-		Connection cn=null;
-		try {
-			cn = tManager.getDataSource().getConnection();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		Connection cn = DataSourceUtils.getConnection(tManager.getDataSource());
 
 		//Transaction
 		try {
-			cn.setAutoCommit(false);
-			cpyDAO.create(comp);
-			cn.commit();
+		cpyDAO.create(comp);
+		}catch(SQLException e){
+			throw new RuntimeException("rollback on creation");
+		}
+		endTransaction(cn," on save");
+		try {
+			cn.close();
 		} catch (SQLException e) {
-			try {
-				cn.rollback();
-			} catch (SQLException e2) {
-				throw new IllegalStateException("Could not roll back on save");
-			}
-		} finally {
-			endTransaction(cn," on save");
-			try {
-				tManager.getDataSource().getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}		
-	}
+			throw new IllegalStateException("Could not close connection");
+		}
+	}		
 }
