@@ -109,8 +109,10 @@
 			<div class="clearfix">
 				<label for="introduced"><spring:message code="introduced" /></label>
 				<div class="input">
-					<joda:format value="${ecomputer.introduced}" pattern="yyyy-MM-dd" var="introducedFormatted" />
-					<form:input id="introduced" type="text" value ="${introducedFormatted}" name="introduced" path="introduced" />
+					<joda:format value="${ecomputer.introduced}" pattern="yyyy-MM-dd"
+						var="introducedFormatted" />
+					<form:input id="introduced" type="text"
+						value="${introducedFormatted}" name="introduced" path="introduced" />
 					<span class="help-inline"><spring:message code="pattern" /></span>
 					<input readonly size="${errorlist.get(1).length()}" type="text"
 						value="${errorlist.get(1)}" />
@@ -120,8 +122,11 @@
 				<label for="discontinued"><spring:message
 						code="discontinued" /></label>
 				<div class="input">
-					<joda:format value="${ecomputer.discontinued}" pattern="yyyy-MM-dd" var="discontinuedFormatted" />
-					<form:input id="discontinued" type="text" value ="${discontinuedFormatted}" name="discontinued" path="discontinued" />					
+					<joda:format value="${ecomputer.discontinued}" pattern="yyyy-MM-dd"
+						var="discontinuedFormatted" />
+					<form:input id="discontinued" type="text"
+						value="${discontinuedFormatted}" name="discontinued"
+						path="discontinued" />
 					<span class="help-inline"><spring:message code="pattern" /></span>
 					<input readonly size="${errorlist.get(2).length()}" type="text"
 						value="${errorlist.get(2)}" />
@@ -136,8 +141,8 @@
 							<option value="${company.id}">${company.name}</option>
 						</c:forEach>
 					</form:select>
-					<span class="help-inline"><spring:message code="choose" /></span> <input
-						readonly size="${errorlist.get(3).length()}" type="text"
+					<span class="help-inline"><spring:message code="choose" /></span>
+					<input readonly size="${errorlist.get(3).length()}" type="text"
 						value="${errorlist.get(3)}" />
 				</div>
 			</div>

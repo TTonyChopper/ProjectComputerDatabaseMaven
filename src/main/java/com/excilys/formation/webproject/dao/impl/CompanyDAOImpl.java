@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.webproject.dao.CompanyDAO;
-import com.excilys.formation.webproject.db.ConnectionFactory;
 import com.excilys.formation.webproject.om.Company;
 
 /**
@@ -24,8 +24,30 @@ import com.excilys.formation.webproject.om.Company;
 public class CompanyDAOImpl implements CompanyDAO{
 
 	@Autowired
-	private ConnectionFactory cnFactory;
-
+	private DataSourceTransactionManager tManager;
+	
+	/**
+	 * 
+	 * @param stmt
+	 */
+	private void closeStatement(Statement stmt) {
+		try {
+			if (stmt != null) stmt.close();
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not close statement");
+		}
+	}
+	/**
+	 *  
+	 * @param rs
+	 */
+	private void closeResultSet(ResultSet rs) {
+		try {
+			if (rs != null) rs.close();
+		} catch (Exception e) {
+			throw new IllegalStateException("Could not close result set");
+		} 
+	}
 	/**
 	 * 
 	 * @param rs The ResulSet from the query on the database Root
@@ -53,7 +75,12 @@ public class CompanyDAOImpl implements CompanyDAO{
 		Connection cn = null;
 
 		try {
-			cn = cnFactory.getConnection();
+			try {
+				cn = tManager.getDataSource().getConnection();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE id = ?;");
 			stmt.setLong(1,id);
 
@@ -66,8 +93,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.closeResultSet(rs);
-			cnFactory.closeStatement(stmt);
+			closeResultSet(rs);
+			closeStatement(stmt);
 		}
 		return company;
 	}
@@ -83,7 +110,12 @@ public class CompanyDAOImpl implements CompanyDAO{
 		Connection cn = null;
 
 		try {
-			cn = cnFactory.getConnection();
+			try {
+				cn = tManager.getDataSource().getConnection();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			stmt = cn.prepareStatement("SELECT * FROM company WHERE name = ?;");
 			stmt.setString(1,name);
 			rs = stmt.executeQuery();	
@@ -95,8 +127,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("SQL Exception on ResultSet");
 		} finally {
-			cnFactory.closeResultSet(rs);
-			cnFactory.closeStatement(stmt);
+			closeResultSet(rs);
+			closeStatement(stmt);
 		}
 		return company;
 	}
@@ -112,8 +144,12 @@ public class CompanyDAOImpl implements CompanyDAO{
 		Connection cn = null;
 
 		try {
-
-			cn = cnFactory.getConnection();
+			try {
+				cn = tManager.getDataSource().getConnection();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM company;");
 
@@ -122,8 +158,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 		} catch (SQLException e) {
 			throw new IllegalStateException("Error while querying the database");
 		} finally {
-			cnFactory.closeResultSet(rs);
-			cnFactory.closeStatement(stmt);
+			closeResultSet(rs);
+			closeStatement(stmt);
 		}
 		return liste;
 	}
@@ -136,13 +172,19 @@ public class CompanyDAOImpl implements CompanyDAO{
 
 		PreparedStatement stmt = null;
 
-		Connection cn = cnFactory.getConnection();
+		Connection cn = null;
+		try {
+			cn = tManager.getDataSource().getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		stmt = cn.prepareStatement("INSERT into company(id,name) VALUES(?,?);");
 
 		stmt.setLong(1,comp.getId());
 		stmt.setString(2,comp.getName());
 		stmt.executeUpdate();
 
-		cnFactory.closeStatement(stmt);	
+		closeStatement(stmt);	
 	}
 }

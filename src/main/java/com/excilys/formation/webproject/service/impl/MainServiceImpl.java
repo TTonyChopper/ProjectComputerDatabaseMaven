@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.webproject.dao.CompanyDAO;
 import com.excilys.formation.webproject.dao.ComputerDAO;
-import com.excilys.formation.webproject.db.ConnectionFactory;
 import com.excilys.formation.webproject.om.Company;
 import com.excilys.formation.webproject.om.Computer;
 import com.excilys.formation.webproject.service.MainService;
@@ -22,11 +22,12 @@ import com.excilys.formation.webproject.common.PageWrapper;
  * @author excilys
  *
  */
+//@Transactional
 @Service
 public class MainServiceImpl implements MainService{
 
 	@Autowired
-	private ConnectionFactory cnFactory;
+	private DataSourceTransactionManager tManager;
 	@Autowired
 	private ComputerDAO cpuDAO;
 	@Autowired
@@ -50,7 +51,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public Computer findComputer(Long id) {
 		Computer comp = cpuDAO.find(id);
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return comp;
 	}
 	/**
@@ -60,7 +65,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public Integer getListComputerSize() {
 		Integer size = cpuDAO.getListSize();
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return size;	
 	}
 	/**
@@ -70,7 +79,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void getListComputer(PageWrapper pageWrapper) {
 		cpuDAO.getList(pageWrapper);
-		cnFactory.disconnect();	
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 	}
 	/**
 	 * 
@@ -80,7 +93,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public Integer getListComputerSizeWithName(PageWrapper pageWrapper) {
 		Integer size = cpuDAO.getListSizeWithName(pageWrapper);
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return size;
 	}
 	/**
@@ -91,7 +108,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public List<Computer> getListComputerWithName(PageWrapper pageWrapper) {
 		List<Computer> liste = cpuDAO.getListWithName(pageWrapper);
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return liste;
 	}
 	/**
@@ -100,8 +121,14 @@ public class MainServiceImpl implements MainService{
 	 */
 	@Override
 	public void createComputer(Computer comp) {
-
-		Connection cn = cnFactory.getConnection();
+	
+		Connection cn=null;
+		try {
+			cn = tManager.getDataSource().getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//Transaction
 		try {
@@ -116,7 +143,11 @@ public class MainServiceImpl implements MainService{
 			}
 		} finally {
 			endTransaction(cn," on creation");
-			cnFactory.disconnect();
+			try {
+				tManager.getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 	}	
 	/**
@@ -127,7 +158,13 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void saveComputer(Computer comp, Long id) {
 
-		Connection cn = cnFactory.getConnection();
+		Connection cn=null;
+		try {
+			cn = tManager.getDataSource().getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//Transaction
 		try {
@@ -142,7 +179,11 @@ public class MainServiceImpl implements MainService{
 			}
 		} finally {
 			endTransaction(cn," on save");
-			cnFactory.disconnect();
+			try {
+				tManager.getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 	}
 	/**
@@ -152,7 +193,13 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void deleteComputer(Long id) {
 
-		Connection cn = cnFactory.getConnection();
+		Connection cn=null;
+		try {
+			cn = tManager.getDataSource().getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//Transaction
 		try {
@@ -167,7 +214,11 @@ public class MainServiceImpl implements MainService{
 			}
 		} finally {
 			endTransaction(cn," on deletion");
-			cnFactory.disconnect();
+			try {
+				tManager.getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 	}
 	/**
@@ -179,7 +230,11 @@ public class MainServiceImpl implements MainService{
 		Long idL = Long.decode(id);
 		if (idL > 0) comp = cpyDAO.findById(idL);
 
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return comp; 
 	}
 	/**
@@ -189,7 +244,11 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public List<Company> getListCompany() {
 		ArrayList<Company> list  = (ArrayList<Company>) cpyDAO.getList();
-		cnFactory.disconnect();
+		try {
+			tManager.getDataSource().getConnection().close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return list; 
 	}
 	/**
@@ -199,7 +258,13 @@ public class MainServiceImpl implements MainService{
 	@Override
 	public void createCompany(Company comp) {
 
-		Connection cn = cnFactory.getConnection();
+		Connection cn=null;
+		try {
+			cn = tManager.getDataSource().getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//Transaction
 		try {
@@ -214,7 +279,11 @@ public class MainServiceImpl implements MainService{
 			}
 		} finally {
 			endTransaction(cn," on save");
-			cnFactory.disconnect();
+			try {
+				tManager.getDataSource().getConnection().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}		
 	}
 }
