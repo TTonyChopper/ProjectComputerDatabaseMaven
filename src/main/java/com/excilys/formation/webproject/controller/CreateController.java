@@ -60,7 +60,8 @@ public class CreateController {
 	public String postAdd(@ModelAttribute @Valid ComputerDTO computerDTO,BindingResult result,
 			Model model) {		
 
-		Computer computer = mapper.fromDTO(computerDTO);
+		Company company = mainService.findCompanyById(computerDTO.getCompany());
+		Computer computer = mapper.fromDTO(computerDTO, company);
 		List<String> errorlist = Validator.check(computerDTO,computer.getCompany().getName());
 		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();
 		model.addAttribute("companylist", companylist);

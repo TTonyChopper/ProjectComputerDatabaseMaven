@@ -5,25 +5,20 @@ import java.sql.Timestamp;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.excilys.formation.webproject.om.Company;
 import com.excilys.formation.webproject.om.Computer;
-import com.excilys.formation.webproject.service.impl.MainServiceImpl;
 
 @Component
 public class Mapper {
-
-	@Autowired
-	private MainServiceImpl mainService;
 	
 	/**
 	 * 
 	 * @param computerDTO
 	 * @return
 	 */
-	public Computer fromDTO(ComputerDTO computerDTO) {
+	public Computer fromDTO(ComputerDTO computerDTO, Company company) {
 		
 		if (computerDTO.getIntroduced()==null) computerDTO.setIntroduced("");
 		if (computerDTO.getDiscontinued()==null) computerDTO.setDiscontinued("");
@@ -42,7 +37,7 @@ public class Mapper {
 		}else {
 			introduced = new DateTime(new Timestamp(0));
 		}	
-		if (computerDTO.getDiscontinued() != null) {
+		if (!computerDTO.getDiscontinued().isEmpty()) {
 			try {
 				discontinued = dtf.parseDateTime(computerDTO.getDiscontinued());
 			} catch(NullPointerException e) {
@@ -52,7 +47,7 @@ public class Mapper {
 			discontinued = new DateTime(new Timestamp(0));	
 		}	
 
-		Company company = mainService.findCompanyById(computerDTO.getCompany()); 
+		//Company company = mainService.findCompanyById(computerDTO.getCompany()); 
 
 		return new Computer.CpuBuilder().name(name).introduced(introduced).discontinued(discontinued).company(company).build();	
 	}

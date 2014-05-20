@@ -67,8 +67,9 @@ public class SaveController {
 			@RequestParam(value="eid") String eid,
 			Model model) {
 
-		Long savedid = Long.decode(eid);		
-		Computer computer = mapper.fromDTO(computerDTO);
+		Long savedid = Long.decode(eid);
+		Company company = mainService.findCompanyById(computerDTO.getCompany());
+		Computer computer = mapper.fromDTO(computerDTO, company);
 
 		List<String> errorlist = Validator.check(computerDTO,computer.getCompany().getName());
 		List<Company> companylist = (ArrayList<Company>)mainService.getListCompany();

@@ -1,6 +1,5 @@
 package com.excilys.formation.webproject.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.formation.webproject.om.Company;
@@ -29,5 +28,5 @@ public interface CompanyDAO{
 	 * 
 	 * @param comp A Company to be added in the table company
 	 */
-	public void create(Company comp)throws SQLException;
+	public void create(Company comp);
 }

@@ -16,9 +16,7 @@
 
 	<!-- Servlet Spring Container -->
 	<listener>
-		<listener-class>
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
 	<!-- Dispatcher Servlet -->
@@ -38,5 +36,10 @@
 		<url-pattern>*.js</url-pattern>
 	</servlet-mapping>
 
+	<!-- Errors -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/jsp/error.jsp</location>
+	</error-page>
 
 </web-app>

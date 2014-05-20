@@ -51,7 +51,7 @@ public interface ComputerDAO{
 	 * @param comp
 	 * @throws SQLException
 	 */
-	public void create(Computer comp)throws SQLException;
+	public void create(Computer comp);
 	/**
 	 * 
 	 * @param cn
@@ -59,12 +59,12 @@ public interface ComputerDAO{
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void save(Computer comp,Long id)throws SQLException;
+	public void save(Computer comp,Long id);
 	/**
 	 * 
 	 * @param cn
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void delete(Long id)throws SQLException;
+	public void delete(Long id);
 }
