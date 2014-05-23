@@ -8,14 +8,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.webproject.common.Closer;
 import com.excilys.formation.webproject.dao.CompanyDAO;
 import com.excilys.formation.webproject.om.Company;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
  * 
@@ -26,7 +25,7 @@ import com.excilys.formation.webproject.om.Company;
 public class CompanyDAOImpl implements CompanyDAO{
 
 	@Autowired
-	private DataSource datasource;
+	private BoneCPDataSource datasource;
 	
 	@Autowired
 	private Closer closer;

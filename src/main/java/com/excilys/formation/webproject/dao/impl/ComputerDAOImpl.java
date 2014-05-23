@@ -10,8 +10,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -27,6 +25,7 @@ import com.excilys.formation.webproject.om.Computer;
 import com.excilys.formation.webproject.om.Computer.CpuBuilder;
 import com.excilys.formation.webproject.common.Closer;
 import com.excilys.formation.webproject.common.PageWrapper;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
  * attributenumber : associates an Integer to any field of Computer
@@ -45,7 +44,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 	final Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 	
 	@Autowired
-	private DataSource datasource;
+	private BoneCPDataSource datasource;
 	
 	@Autowired
 	private Closer closer;
@@ -145,7 +144,9 @@ public class ComputerDAOImpl implements ComputerDAO{
 		ResultSet rs = null ;
 		Statement stmt = null;
 		Connection cn = DataSourceUtils.getConnection(datasource);
-
+		
+		System.out.println(	"verif de connection datasource si dans transaction=  "+DataSourceUtils.isConnectionTransactional(cn, datasource));
+		
 		try {
 			stmt = cn.createStatement();
 			rs = stmt.executeQuery("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "
@@ -170,8 +171,9 @@ public class ComputerDAOImpl implements ComputerDAO{
 		ResultSet rs = null ;
 		PreparedStatement stmt = null;
 		Connection cn = DataSourceUtils.getConnection(datasource);
-
+		
 		System.out.println(	"verif de connection datasource si dans transaction=  "+DataSourceUtils.isConnectionTransactional(cn, datasource));
+		
 		
 		try {
 			stmt = cn.prepareStatement("SELECT DISTINCT cpu.id,cpu.name,cpu.introduced,cpu.discontinued,cpu.company_id,cpy.name FROM computer AS cpu "

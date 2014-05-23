@@ -92,7 +92,7 @@ public class MainServiceImpl implements MainService{
 		return (ArrayList<Company>) cpyDAO.getList();
 	}
 	
-	@Transactional(rollbackForClassName="RuntimeException")
+	@Transactional
 	@Override
 	public void createCompany(Company comp) {
 			cpyDAO.create(comp);

@@ -81,7 +81,6 @@ public class SaveController {
 			return "addComputer";
 		}
 		else {	
-			System.out.println("hahaha"+computer);
 			mainService.saveComputer(computer,savedid);	
 
 			return "redirect:dashboard";

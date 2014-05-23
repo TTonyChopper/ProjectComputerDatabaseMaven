@@ -2,7 +2,9 @@ package com.excilys.formation.webproject.common;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Closer {
 
 	/**
